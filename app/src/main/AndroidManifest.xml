@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.quintet.littleweather">
 
+    <uses-permission android:name="android.permission.SET_DEBUG_APP" />
+
+
     <application
         android:name=".base.BaseApplication"
         android:allowBackup="true"
@@ -10,8 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".activity.SplashActivity"
-            android:label="23°"
-            android:icon="@drawable/icon"
+            android:icon="@drawable/icon_weather"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
