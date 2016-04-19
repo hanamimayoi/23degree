@@ -27,13 +27,37 @@ public class SplashActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        //在Splash界面等待三秒进入MainActivity
+        //在Splash界面等待三秒进入MainActivity,并将放在assets文件夹里面的db数据库文件，copy到data/data/包名目录下
         waitWhile();
 
-
-        //将放在assets文件夹里面的db数据库文件，copy到data/data/包名目录下
-        copyDBToData();
     }
+
+
+    private void waitWhile() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                //copy db to data/data/com.quintet.littleweather
+                copyDBToData();
+
+                myHandler.sendEmptyMessageDelayed(MSG_TIME_OUT, 3000);
+
+            }
+        }).start();
+    }
+
+    Handler myHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+
+            switch (msg.what) {
+                case MSG_TIME_OUT:
+                    //enterMainActivity();
+            }
+        }
+    };
 
 
     private void copyDBToData() {
@@ -41,7 +65,6 @@ public class SplashActivity extends Activity {
         if (db.exists()) {
             return;
         } else {
-
 
             try {
                 AssetManager assets = getAssets();
@@ -60,6 +83,7 @@ public class SplashActivity extends Activity {
                 is.close();
                 fos.close();
 
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -67,38 +91,6 @@ public class SplashActivity extends Activity {
         }
 
     }
-
-
-    private void waitWhile() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                Message msg = myHandler.obtainMessage();
-                msg.what = MSG_TIME_OUT;
-                myHandler.sendMessage(msg);
-
-
-            }
-        }).start();
-    }
-
-    Handler myHandler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-
-            switch (msg.what) {
-                case MSG_TIME_OUT:
-                    //enterMainActivity();
-            }
-        }
-    };
 
 
     //等待MainActivity 写好后，进行耦合。。。
