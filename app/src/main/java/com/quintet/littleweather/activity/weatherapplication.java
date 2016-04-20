@@ -26,8 +26,11 @@ public class weatherapplication extends BaseActivity implements NavigationView.O
 {
     private SwipeRefreshLayout mSwipeRefreshWidget;
     private RecyclerView mRecyclerView;
-    private List<item> list;
+    private List<item> list1;
     private RecycleView adapter;
+    private List<item> list2;
+    private List<item> list3;
+    private List<item> list4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -53,7 +56,10 @@ public class weatherapplication extends BaseActivity implements NavigationView.O
         //找到swiperefresh控件和recyleview控件
         mSwipeRefreshWidget = (SwipeRefreshLayout) findViewById(R.id.swiprefresh);
         mRecyclerView = (RecyclerView)findViewById(R.id.recyclerview);
-        list=new ArrayList<item>();
+        list1 = new ArrayList<item>();
+        list2 = new ArrayList<item>();
+        list3 = new ArrayList<item>();
+        list4 = new ArrayList<item>();
         //加载RecyelerView控件
         InitRecycleView();
         //加载SwipeRefreshLayout控件
@@ -90,7 +96,7 @@ public class weatherapplication extends BaseActivity implements NavigationView.O
             mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
             //设置adapter
             initData();
-            adapter = new RecycleView(list);
+            adapter = new RecycleView(list1,list2,list3,list4);
             mRecyclerView.setAdapter(adapter);
             //设置item之间的间隔
             SpacesItemDecoration decoration=new SpacesItemDecoration(16);
@@ -99,9 +105,12 @@ public class weatherapplication extends BaseActivity implements NavigationView.O
             //在此处将想要填充的数据填入bean中，并且将填充好的bean装入list中，以便给RecycleView.adapter用。
         public void initData()
         {
-            for(int i=0;i<2;i++)
+            for(int i=0;i<4;i++)
             {
-                list.add(new item());
+                list1.add(new item());
+                list2.add(new item());
+                list3.add(new item());
+                list4.add(new item());
             }
         }
 
@@ -149,23 +158,13 @@ public class weatherapplication extends BaseActivity implements NavigationView.O
     {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-        if (id == R.id.nav_camera)
+        if (id == R.id.nav_city)
         {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery)
+        } else if (id == R.id.nav_set)
         {
 
-        } else if (id == R.id.nav_slideshow)
-        {
-
-        } else if (id == R.id.nav_manage)
-        {
-
-        } else if (id == R.id.nav_share)
-        {
-
-        } else if (id == R.id.nav_send)
+        } else if (id == R.id.nav_about)
         {
 
         }
