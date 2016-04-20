@@ -31,7 +31,6 @@ public class SplashActivity extends Activity {
 
     }
 
-
     private void waitWhile() {
         new Thread(new Runnable() {
             @Override

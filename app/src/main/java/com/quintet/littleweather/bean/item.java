@@ -1,4 +1,4 @@
-package com.quintet.littleweather.config;
+package com.quintet.littleweather.bean;
 
 /**
  * Created by Administrator on 16-4-19.
