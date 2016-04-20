@@ -7,17 +7,17 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.quintet.littleweather.R;
+import com.quintet.littleweather.adapter.RecycleView;
 import com.quintet.littleweather.base.BaseActivity;
-import com.quintet.littleweather.base.RecycleView;
+import com.quintet.littleweather.bean.item;
 import com.quintet.littleweather.config.SpacesItemDecoration;
-import com.quintet.littleweather.config.item;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,7 +87,7 @@ public class weatherapplication extends BaseActivity implements NavigationView.O
         public void InitRecycleView()
         {
             //设置layoutManager
-            mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
             //设置adapter
             initData();
             adapter = new RecycleView(list);
@@ -96,10 +96,10 @@ public class weatherapplication extends BaseActivity implements NavigationView.O
             SpacesItemDecoration decoration=new SpacesItemDecoration(16);
             mRecyclerView.addItemDecoration(decoration);
         }
-           //在此填充数据内容
+            //在此处将想要填充的数据填入bean中，并且将填充好的bean装入list中，以便给RecycleView.adapter用。
         public void initData()
         {
-            for(int i=0;i<10;i++)
+            for(int i=0;i<2;i++)
             {
                 list.add(new item());
             }
