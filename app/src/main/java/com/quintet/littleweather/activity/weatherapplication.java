@@ -1,6 +1,5 @@
 package com.quintet.littleweather.activity;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
@@ -8,15 +7,14 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.WindowManager;
 
 import com.quintet.littleweather.R;
+import com.quintet.littleweather.base.BaseActivity;
 import com.quintet.littleweather.base.RecycleView;
 import com.quintet.littleweather.config.SpacesItemDecoration;
 import com.quintet.littleweather.config.item;
@@ -24,7 +22,7 @@ import com.quintet.littleweather.config.item;
 import java.util.ArrayList;
 import java.util.List;
 
-public class weatherapplication extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
+public class weatherapplication extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener
 {
     private SwipeRefreshLayout mSwipeRefreshWidget;
     private RecyclerView mRecyclerView;
@@ -36,13 +34,7 @@ public class weatherapplication extends AppCompatActivity implements NavigationV
     {
         super.onCreate(savedInstanceState);
         //设置沉浸式状态栏：在此选择变透明的方式
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-        {
-            //透明状态栏
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            //透明导航栏
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-        }
+        setstatusbar();
 
         setContentView(R.layout.activity_weatherapplication);
         //设置工具栏
