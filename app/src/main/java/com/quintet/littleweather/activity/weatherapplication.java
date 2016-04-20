@@ -13,7 +13,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.amap.api.location.AMapLocation;
+import com.amap.api.location.AMapLocationClient;
+import com.amap.api.location.AMapLocationClientOption;
+import com.amap.api.location.AMapLocationListener;
 import com.quintet.littleweather.R;
+import com.quintet.littleweather.Utils.MyConstant;
+import com.quintet.littleweather.Utils.SpTool;
 import com.quintet.littleweather.base.BaseActivity;
 import com.quintet.littleweather.base.RecycleView;
 import com.quintet.littleweather.config.SpacesItemDecoration;
@@ -22,12 +28,15 @@ import com.quintet.littleweather.config.item;
 import java.util.ArrayList;
 import java.util.List;
 
-public class weatherapplication extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener
+public class weatherapplication extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener,AMapLocationListener
 {
     private SwipeRefreshLayout mSwipeRefreshWidget;
     private RecyclerView mRecyclerView;
     private List<item> list;
     private RecycleView adapter;
+    private boolean isLocation;//判断是否使用过高德定位；
+    private AMapLocationClient mLocationClient;//高德定位客服端；
+    private AMapLocationClientOption mLocationOption;//高德定位参数设置
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -173,5 +182,66 @@ public class weatherapplication extends BaseActivity implements NavigationView.O
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    /**
+     * 使用高德定位功能
+     */
+    public void Location(){
+        //高德定位客户端
+        mLocationClient = new AMapLocationClient(getApplicationContext());
+        //注册定位回调监听
+        mLocationClient.setLocationListener(this);
+        //设置定位参数；
+        mLocationOption = new AMapLocationClientOption();
+        //设置定位模式为高精度模式，Battery_Saving为低功耗模式，Device_Sensors是仅设备模式
+        mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Battery_Saving);
+        //设置是否返回地址信息（默认返回地址信息）
+        mLocationOption.setNeedAddress(true);
+        //设置是否只定位一次,默认为false
+        mLocationOption.setOnceLocation(false);
+        //设置是否强制刷新WIFI，默认为强制刷新
+        mLocationOption.setWifiActiveScan(true);
+        //设置是否允许模拟位置,默认为false，不允许模拟位置
+        mLocationOption.setMockEnable(false);
+        //设置定位间隔 单位毫秒,该处默认为3小时更新一次；
+        mLocationOption.setInterval(SpTool.getInt(getApplicationContext(),MyConstant.AUTO_UPDATE,3)*MyConstant.ONE_HOUR*1000);
+        //给定位客户端设置定位参数
+        mLocationClient.setLocationOption(mLocationOption);
+
+        //启动高德定位
+        mLocationClient.startLocation();
+    }
+
+    /**
+     * @param aMapLocation
+     *      实现高德定位监听回调AMapLocationListener接口需要重写的方法；
+     */
+    @Override
+    public void onLocationChanged(AMapLocation aMapLocation) {
+        if (aMapLocation != null) {
+            if (aMapLocation.getErrorCode() == 0) {//定位成功回调信息，设置相关消息
+                //获取当前定位结果来源，如网络定位结果，详见定位类型表
+                aMapLocation.getLocationType();
+                //将定位的“城市名称”保存到SharedPreference中
+                SpTool.putString(getApplicationContext(), MyConstant.CITY_NAME,aMapLocation.getCity());
+                //表明已经启动过定位；
+                isLocation = true;
+            } else {
+                //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
+                // 将错误信息写到相应日志文档中
+
+            }
+
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //销毁该界面时，停止高德定位功能
+        mLocationClient.stopLocation();
+        //并销毁高德定位客户端
+        mLocationClient.onDestroy();
     }
 }
