@@ -1,6 +1,7 @@
 package com.quintet.littleweather.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,12 +16,10 @@ import java.io.InputStream;
 
 public class SplashActivity extends Activity {
 
-
     public static final int MSG_TIME_OUT = 1;
     public static final String DB_NAME = "china_city.db"; //数据库的名字
     public static final String PACKAGE_NAME = "com.quintet.littleweather"; //包名
     public static final String DB_PATH = "data/data/" + PACKAGE_NAME + "/" + DB_NAME;//db存放的路径
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +53,7 @@ public class SplashActivity extends Activity {
 
             switch (msg.what) {
                 case MSG_TIME_OUT:
-                    //enterMainActivity();
+                enterMainActivity();
             }
         }
     };
@@ -94,8 +93,8 @@ public class SplashActivity extends Activity {
 
 
     //等待MainActivity 写好后，进行耦合。。。
-/*    private void enterMainActivity() {
-        startActivity(new Intent(SplashActivity.this, MainActivity.class));
+    private void enterMainActivity() {
+        startActivity(new Intent(SplashActivity.this, weatherapplication.class));
         finish();
-    }*/
+    }
 }
