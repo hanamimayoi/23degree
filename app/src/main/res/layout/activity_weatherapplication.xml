@@ -75,9 +75,8 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        android:background="@drawable/navigat"
-
-        app:headerLayout="@layout/leftmenuheader"
+        android:background="@drawable/navigator_view_pic"
+        app:headerLayout="@drawable/nav_header_main"
         app:menu="@menu/activity_menu_drawer" />
 
 </android.support.v4.widget.DrawerLayout>

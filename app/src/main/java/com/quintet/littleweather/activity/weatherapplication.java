@@ -62,6 +62,7 @@ public class weatherapplication extends BaseActivity implements NavigationView.O
         list4 = new ArrayList<item>();
         //加载RecyelerView控件
         InitRecycleView();
+
         //加载SwipeRefreshLayout控件
         InitSwipeRefresh();
     }
