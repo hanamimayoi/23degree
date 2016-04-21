@@ -17,6 +17,7 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
+import com.jaeger.library.StatusBarUtil;
 import com.quintet.littleweather.R;
 import com.quintet.littleweather.Utils.MyConstant;
 import com.quintet.littleweather.Utils.SpTool;
@@ -32,16 +33,14 @@ public class weatherapplication extends BaseActivity implements NavigationView.O
 {
     private SwipeRefreshLayout mSwipeRefreshWidget;
     private RecyclerView mRecyclerView;
-    private List<item> list1;
     private RecycleView adapter;
     //判断是否使用过高德定位；
     private boolean isLocation;
     //高德定位客服端；
-    private AMapLocationClient mLocationClient;
+    private AMapLocationClient mLocationClient=null;
     //高德定位参数设置
-    private AMapLocationClientOption mLocationOption;
-
-
+    private AMapLocationClientOption mLocationOption=null;
+    private List<item> list1;
     private List<item> list2;
     private List<item> list3;
     private List<item> list4;
@@ -51,14 +50,12 @@ public class weatherapplication extends BaseActivity implements NavigationView.O
     {
         super.onCreate(savedInstanceState);
         //设置沉浸式状态栏：在此选择变透明的方式
-        setstatusbar();
-
         setContentView(R.layout.activity_weatherapplication);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        StatusBarUtil.setTranslucentForDrawerLayout(this,drawer,0);
         //设置工具栏
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         //ActionBarDrawerToggle实现了DrawerLayout.DrawerListener（我也不知道这三行代码什么意思!）
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -213,7 +210,6 @@ public class weatherapplication extends BaseActivity implements NavigationView.O
         mLocationOption.setInterval(SpTool.getInt(getApplicationContext(),MyConstant.AUTO_UPDATE,3)*MyConstant.ONE_HOUR*1000);
         //给定位客户端设置定位参数
         mLocationClient.setLocationOption(mLocationOption);
-
         //启动高德定位
         mLocationClient.startLocation();
     }
@@ -235,18 +231,18 @@ public class weatherapplication extends BaseActivity implements NavigationView.O
             } else {
                 //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
                 // 将错误信息写到相应日志文档中
-
             }
-
         }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //销毁该界面时，停止高德定位功能
-        mLocationClient.stopLocation();
-        //并销毁高德定位客户端
-        mLocationClient.onDestroy();
+        if (!(mLocationClient == null)) {
+            //销毁该界面时，停止高德定位功能
+            mLocationClient.stopLocation();
+            //并销毁高德定位客户端
+            mLocationClient.onDestroy();
+        }
     }
 }
