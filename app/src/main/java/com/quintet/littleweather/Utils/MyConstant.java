@@ -1,4 +1,4 @@
-package com.quintet.littleweather.Utils;
+package com.quintet.littleweather.utils;
 
 /**
  *项目中经常要使用到的一些常量

@@ -1,4 +1,4 @@
-package com.quintet.littleweather.Utils;
+package com.quintet.littleweather.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;

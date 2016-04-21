@@ -7,8 +7,8 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,31 +17,29 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
-import com.jaeger.library.StatusBarUtil;
 import com.quintet.littleweather.R;
-import com.quintet.littleweather.utils.MyConstant;
-import com.quintet.littleweather.utils.SpTool;
 import com.quintet.littleweather.adapter.RecycleView;
 import com.quintet.littleweather.base.BaseActivity;
 import com.quintet.littleweather.bean.item;
 import com.quintet.littleweather.config.Setting;
 import com.quintet.littleweather.config.SpacesItemDecoration;
 import com.quintet.littleweather.https.RetrofitSingleton;
+import com.quintet.littleweather.utils.MyConstant;
+import com.quintet.littleweather.utils.SpTool;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener,AMapLocationListener
-{
+public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, AMapLocationListener {
     private SwipeRefreshLayout mSwipeRefreshWidget;
     private RecyclerView mRecyclerView;
     private RecycleView adapter;
     //判断是否使用过高德定位；
     private boolean isLocation;
     //高德定位客服端；
-    private AMapLocationClient mLocationClient=null;
+    private AMapLocationClient mLocationClient = null;
     //高德定位参数设置
-    private AMapLocationClientOption mLocationOption=null;
+    private AMapLocationClientOption mLocationOption = null;
     private List<item> list1;
     private List<item> list2;
     private List<item> list3;
@@ -53,13 +51,15 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         //设置沉浸式状态栏：在此选择变透明的方式
         setContentView(R.layout.activity_weatherapplication);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        StatusBarUtil.setTranslucentForDrawerLayout(this,drawer,0);
+
         //设置工具栏
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        //ActionBarDrawerToggle实现了DrawerLayout.DrawerListener（我也不知道这三行代码什么意思!）
+        //监听抽屉的打开和关闭
+        //ActionBarDrawerToggle实现了DrawerLayout.DrawerListener
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        //setDrawerListener()方法已经过时，改用addDrawerListener()
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         //设置NavigationView的监听事件
@@ -67,7 +67,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         navigationView.setNavigationItemSelectedListener(this);
         //找到swiperefresh控件和recyleview控件
         mSwipeRefreshWidget = (SwipeRefreshLayout) findViewById(R.id.swiprefresh);
-        mRecyclerView = (RecyclerView)findViewById(R.id.recyclerview);
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         list1 = new ArrayList<item>();
         list2 = new ArrayList<item>();
         list3 = new ArrayList<item>();
@@ -77,54 +77,49 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         //加载SwipeRefreshLayout控件
         InitSwipeRefresh();
     }
-        //设置下拉刷新
-        public void InitSwipeRefresh()
-        {
-            //设置卷内的颜色
-            mSwipeRefreshWidget.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light, android.R.color.holo_orange_light, android.R.color.holo_green_light);
-            //设置下拉刷新监听
-            mSwipeRefreshWidget.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
-            {
-                @Override
-                public void onRefresh()
-                {
-                    // TODO Auto-generated method stub
-                    new Handler().postDelayed(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            adapter.notifyDataSetChanged();
-                            mSwipeRefreshWidget.setRefreshing(false);
-                        }
-                    },6000);
-                }
-            });
-        }
-        //设置RecycleView列表,瀑布流!
-        public void InitRecycleView()
-        {
-            //设置layoutManager
-            mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-            //设置adapter
-            initData();
-            adapter = new RecycleView(list1,list2,list3,list4);
-            mRecyclerView.setAdapter(adapter);
-            //设置item之间的间隔
-            SpacesItemDecoration decoration=new SpacesItemDecoration(16);
-            mRecyclerView.addItemDecoration(decoration);
-        }
-            //在此处将想要填充的数据填入bean中，并且将填充好的bean装入list中，以便给RecycleView.adapter用。
-        public void initData()
-        {
-            for(int i=0;i<4;i++)
-            {
-                list1.add(new item());
-                list2.add(new item());
-                list3.add(new item());
-                list4.add(new item());
+
+    //设置下拉刷新
+    public void InitSwipeRefresh() {
+        //设置卷内的颜色
+        mSwipeRefreshWidget.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light, android.R.color.holo_orange_light, android.R.color.holo_green_light);
+        //设置下拉刷新监听
+        mSwipeRefreshWidget.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // TODO Auto-generated method stub
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+                        mSwipeRefreshWidget.setRefreshing(false);
+                    }
+                }, 6000);
             }
+        });
+    }
+
+    //设置RecycleView列表,瀑布流!
+    public void InitRecycleView() {
+        //设置layoutManager
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        //设置adapter
+        initData();
+        adapter = new RecycleView(list1, list2, list3, list4);
+        mRecyclerView.setAdapter(adapter);
+        //设置item之间的间隔
+        SpacesItemDecoration decoration = new SpacesItemDecoration(16);
+        mRecyclerView.addItemDecoration(decoration);
+    }
+
+    //在此处将想要填充的数据填入bean中，并且将填充好的bean装入list中，以便给RecycleView.adapter用。
+    public void initData() {
+        for (int i = 0; i < 4; i++) {
+            list1.add(new item());
+            list2.add(new item());
+            list3.add(new item());
+            list4.add(new item());
         }
+    }
 
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -185,7 +180,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     /**
      * 使用高德定位功能
      */
-    public void Location(){
+    public void Location() {
         //高德定位客户端
         mLocationClient = new AMapLocationClient(getApplicationContext());
         //注册定位回调监听
@@ -203,7 +198,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         //设置是否允许模拟位置,默认为false，不允许模拟位置
         mLocationOption.setMockEnable(false);
         //设置定位间隔 单位毫秒,该处默认为3小时更新一次；
-        mLocationOption.setInterval(SpTool.getInt(getApplicationContext(),MyConstant.AUTO_UPDATE,3)*MyConstant.ONE_HOUR*1000);
+        mLocationOption.setInterval(SpTool.getInt(getApplicationContext(), MyConstant.AUTO_UPDATE, 3) * MyConstant.ONE_HOUR * 1000);
         //给定位客户端设置定位参数
         mLocationClient.setLocationOption(mLocationOption);
         //启动高德定位
@@ -211,8 +206,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     /**
-     * @param aMapLocation
-     *      实现高德定位监听回调AMapLocationListener接口需要重写的方法；
+     * @param aMapLocation 实现高德定位监听回调AMapLocationListener接口需要重写的方法；
      */
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
@@ -221,7 +215,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 //获取当前定位结果来源，如网络定位结果，详见定位类型表
                 aMapLocation.getLocationType();
                 //将定位的“城市名称”保存到SharedPreference中
-                SpTool.putString(getApplicationContext(), MyConstant.CITY_NAME,aMapLocation.getCity());
+                SpTool.putString(getApplicationContext(), MyConstant.CITY_NAME, aMapLocation.getCity());
                 //表明已经启动过定位；
                 isLocation = true;
             } else {
