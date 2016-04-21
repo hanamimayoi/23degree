@@ -10,6 +10,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -20,6 +21,7 @@ import com.amap.api.location.AMapLocationListener;
 import com.quintet.littleweather.R;
 import com.quintet.littleweather.adapter.RecycleView;
 import com.quintet.littleweather.base.BaseActivity;
+import com.quintet.littleweather.bean.WeatherAPI;
 import com.quintet.littleweather.bean.item;
 import com.quintet.littleweather.config.Setting;
 import com.quintet.littleweather.config.SpacesItemDecoration;
@@ -29,6 +31,11 @@ import com.quintet.littleweather.utils.SpTool;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, AMapLocationListener {
     private SwipeRefreshLayout mSwipeRefreshWidget;
@@ -76,6 +83,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         InitRecycleView();
         //加载SwipeRefreshLayout控件
         InitSwipeRefresh();
+
+
+        fetchDataByNetwork();
     }
 
     //设置下拉刷新
@@ -172,7 +182,34 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     public void fetchDataByNetwork() {
 
-        RetrofitSingleton.getApiService().getWeatherAPI("上海", Setting.KEY);
+        Subscriber<WeatherAPI> subscriber = new Subscriber<WeatherAPI>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(WeatherAPI weatherAPI) {
+                Log.d("MainActivity", weatherAPI.toString());
+            }
+        };
+
+        RetrofitSingleton.getApiService()
+                .getWeatherAPI("上海", Setting.KEY)
+                .subscribeOn(Schedulers.io())
+                .filter(new Func1<WeatherAPI, Boolean>() {
+                    @Override
+                    public Boolean call(WeatherAPI weatherAPI) {
+                        return weatherAPI.heWeatherDataService.get(0).status.equals("ok");
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber);
 
 
     }
