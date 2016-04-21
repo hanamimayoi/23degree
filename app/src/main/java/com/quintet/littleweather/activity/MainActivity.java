@@ -7,8 +7,8 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,17 +18,19 @@ import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
 import com.quintet.littleweather.R;
-import com.quintet.littleweather.Utils.MyConstant;
-import com.quintet.littleweather.Utils.SpTool;
+import com.quintet.littleweather.utils.MyConstant;
+import com.quintet.littleweather.utils.SpTool;
 import com.quintet.littleweather.adapter.RecycleView;
 import com.quintet.littleweather.base.BaseActivity;
 import com.quintet.littleweather.bean.item;
+import com.quintet.littleweather.config.Setting;
 import com.quintet.littleweather.config.SpacesItemDecoration;
+import com.quintet.littleweather.https.RetrofitSingleton;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class weatherapplication extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener,AMapLocationListener
+public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener,AMapLocationListener
 {
     private SwipeRefreshLayout mSwipeRefreshWidget;
     private RecyclerView mRecyclerView;
@@ -47,8 +49,7 @@ public class weatherapplication extends BaseActivity implements NavigationView.O
     private List<item> list4;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //设置沉浸式状态栏：在此选择变透明的方式
         setstatusbar();
@@ -76,7 +77,6 @@ public class weatherapplication extends BaseActivity implements NavigationView.O
         list4 = new ArrayList<item>();
         //加载RecyelerView控件
         InitRecycleView();
-
         //加载SwipeRefreshLayout控件
         InitSwipeRefresh();
     }
@@ -129,38 +129,31 @@ public class weatherapplication extends BaseActivity implements NavigationView.O
             }
         }
 
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START))
-        {
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        }
-        else
-        {
+        } else {
             super.onBackPressed();
         }
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.weatherapplication, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings)
-        {
+        if (id == R.id.action_settings) {
             return true;
         }
 
@@ -169,24 +162,27 @@ public class weatherapplication extends BaseActivity implements NavigationView.O
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item)
-    {
+    public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        if (id == R.id.nav_city)
-        {
+        if (id == R.id.nav_city) {
             // Handle the camera action
-        } else if (id == R.id.nav_set)
-        {
+        } else if (id == R.id.nav_set) {
 
-        } else if (id == R.id.nav_about)
-        {
+        } else if (id == R.id.nav_about) {
 
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void fetchDataByNetwork() {
+
+        RetrofitSingleton.getApiService().getWeatherAPI("上海", Setting.KEY);
+
+
     }
 
     /**

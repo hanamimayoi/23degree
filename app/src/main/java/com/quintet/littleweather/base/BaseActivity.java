@@ -1,17 +1,37 @@
 package com.quintet.littleweather.base;
 
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.view.WindowManager;
+
+import com.quintet.littleweather.config.Setting;
+import com.quintet.littleweather.utils.ACache;
 
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 /**
  * Created by Administrator on 16-4-20.
  */
-public class BaseActivity extends AppCompatActivity
-{
+public class BaseActivity extends AppCompatActivity {
+
+    public Setting mSetting;
+
+    public ACache mACache;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        //初始化setting单例
+        mSetting = Setting.getInstance();
+
+        //初始化cache工具
+        mACache = ACache.get(BaseActivity.this);
+    }
+
     //设置沉浸式状态栏的方法
     public void setstatusbar()
     {

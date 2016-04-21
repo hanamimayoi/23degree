@@ -31,8 +31,8 @@ public class BaseApplication extends Application {
             cacheDir = getCacheDir().toString();
         }
 
-        //初始化RetrofitSingleton
-        RetrofitSingleton.init(getApplicationContext());
+        //初始化apiService
+        RetrofitSingleton.initApiService();
 
     }
 

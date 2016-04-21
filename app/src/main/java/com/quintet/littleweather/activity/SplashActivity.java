@@ -39,7 +39,7 @@ public class SplashActivity extends Activity {
                 //copy db to data/data/com.quintet.littleweather
                 copyDBToData();
 
-                myHandler.sendEmptyMessageDelayed(MSG_TIME_OUT, 3000);
+                myHandler.sendEmptyMessageDelayed(MSG_TIME_OUT, 1000);
 
             }
         }).start();
@@ -93,7 +93,7 @@ public class SplashActivity extends Activity {
 
     //等待MainActivity 写好后，进行耦合。。。
     private void enterMainActivity() {
-        startActivity(new Intent(SplashActivity.this, weatherapplication.class));
+        startActivity(new Intent(SplashActivity.this, MainActivity.class));
         finish();
     }
 }

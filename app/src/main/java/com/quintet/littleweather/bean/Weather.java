@@ -3,7 +3,7 @@ package com.quintet.littleweather.bean;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by hanami on 2016/4/19.
@@ -42,14 +42,14 @@ public class Weather {
      */
     @SerializedName("daily_forecast")
     @Expose
-    public ArrayList<DailyForecastEntity> dailyForecast;
+    public List<DailyForecastEntity> dailyForecast;
 
     /**
      * 每小时天气预报
      */
     @SerializedName("hourly_forecast")
     @Expose
-    public ArrayList<HourlyForecastEntity> hourlyForecast;
+    public List<HourlyForecastEntity> hourlyForecast;
 
     /**
      * 实况天气

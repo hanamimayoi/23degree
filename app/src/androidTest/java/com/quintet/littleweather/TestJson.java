@@ -34,7 +34,8 @@ public class TestJson extends AndroidTestCase {
 
         Gson gson = new GsonBuilder().create();
 
-        Retrofit retrofit = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create(gson))
+        Retrofit retrofit = new Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .baseUrl(ApiInterface.HOST)
                 .callbackExecutor(executor)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
@@ -64,9 +65,8 @@ public class TestJson extends AndroidTestCase {
         };
 
 
-        apiInterface.mWeatherAPI("北京", "e7de0d6bf92744a5aeb829bb3cf6c826")
+        apiInterface.getWeatherAPI("北京", "e7de0d6bf92744a5aeb829bb3cf6c826")
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .filter(new Func1<WeatherAPI, Boolean>() {
                     @Override
                     public Boolean call(WeatherAPI weatherAPI) {
@@ -79,6 +79,8 @@ public class TestJson extends AndroidTestCase {
                         return weatherAPI.heWeatherDataService.get(0);
                     }
                 })
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer);
+
     }
 }
