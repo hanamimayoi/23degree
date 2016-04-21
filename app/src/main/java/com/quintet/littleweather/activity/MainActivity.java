@@ -122,7 +122,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         //设置adapter
         initData();
-        adapter = new RecycleView(list1, list2, list3, list4);
+        adapter = new RecycleView(list1, list2, list3, list4,this);
         mRecyclerView.setAdapter(adapter);
         //设置item之间的间隔
         SpacesItemDecoration decoration = new SpacesItemDecoration(16);
