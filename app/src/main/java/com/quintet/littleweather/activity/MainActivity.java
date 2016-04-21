@@ -85,6 +85,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         InitSwipeRefresh();
 
 
+        location();
+
         fetchDataByNetwork();
     }
 
@@ -180,6 +182,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         return true;
     }
 
+    public void isLocating() {
+        
+    }
+
+    public void fetchData() {
+
+    }
+
     public void fetchDataByNetwork() {
 
         Subscriber<WeatherAPI> subscriber = new Subscriber<WeatherAPI>() {
@@ -217,7 +227,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     /**
      * 使用高德定位功能
      */
-    public void Location() {
+    public void location() {
         //高德定位客户端
         mLocationClient = new AMapLocationClient(getApplicationContext());
         //注册定位回调监听
@@ -234,8 +244,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mLocationOption.setWifiActiveScan(true);
         //设置是否允许模拟位置,默认为false，不允许模拟位置
         mLocationOption.setMockEnable(false);
-        //设置定位间隔 单位毫秒,该处默认为3小时更新一次；
-        mLocationOption.setInterval(SpTool.getInt(getApplicationContext(), MyConstant.AUTO_UPDATE, 3) * MyConstant.ONE_HOUR * 1000);
+        //只在进入程序的时候定位1次
+        mLocationOption.setInterval(-1);
         //给定位客户端设置定位参数
         mLocationClient.setLocationOption(mLocationOption);
         //启动高德定位
