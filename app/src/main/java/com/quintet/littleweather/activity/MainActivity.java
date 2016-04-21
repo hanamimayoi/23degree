@@ -10,6 +10,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,9 +19,12 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.quintet.littleweather.R;
 import com.quintet.littleweather.adapter.RecycleView;
 import com.quintet.littleweather.base.BaseActivity;
+import com.quintet.littleweather.bean.Weather;
 import com.quintet.littleweather.bean.WeatherAPI;
 import com.quintet.littleweather.bean.item;
 import com.quintet.littleweather.config.Setting;
@@ -30,8 +34,10 @@ import com.quintet.littleweather.https.RetrofitSingleton;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -49,6 +55,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private List<item> list2;
     private List<item> list3;
     private List<item> list4;
+
+    //当前的城市名字
+    private Subscriber<Weather> mSubscriber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,10 +91,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         //加载SwipeRefreshLayout控件
         InitSwipeRefresh();
 
+        fetchData();
 
-        location();
 
-        fetchDataByNetwork();
     }
 
     //设置下拉刷新
@@ -114,7 +122,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         //设置adapter
         initData();
-        adapter = new RecycleView(list1, list2, list3, list4);
+        adapter = new RecycleView(list1, list2, list3, list4,this);
         mRecyclerView.setAdapter(adapter);
         //设置item之间的间隔
         SpacesItemDecoration decoration = new SpacesItemDecoration(16);
@@ -180,17 +188,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         return true;
     }
 
-    public void isLocating() {
-        
+    public void refresh() {
+        fetchDataByNetwork();
     }
+
 
     public void fetchData() {
 
-    }
-
-    public void fetchDataByNetwork() {
-
-        Subscriber<WeatherAPI> subscriber = new Subscriber<WeatherAPI>() {
+        mSubscriber = new Subscriber<Weather>() {
             @Override
             public void onCompleted() {
 
@@ -202,10 +207,32 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             }
 
             @Override
-            public void onNext(WeatherAPI weatherAPI) {
-                Log.d("MainActivity", weatherAPI.toString());
+            public void onNext(Weather weather) {
+                Log.d("MainActivity", "weatherJson------------------" + new Gson().toJson(weather));
             }
         };
+
+        fetchDataByCache();
+
+    }
+
+    public void fetchDataByCache() {
+        Log.d("MainActivity", "fetchDataByCache is called");
+
+        String weatherJson = mACache.getAsString("weather");
+
+        //weatherJson不是null或者空串
+        if (!TextUtils.isEmpty(weatherJson)) {
+            Gson gson = new GsonBuilder().create();
+            Weather weather = gson.fromJson(weatherJson, Weather.class);
+            Observable.just(weather).subscribe(mSubscriber);
+        } else {
+            fetchDataByNetwork();
+        }
+    }
+
+    public void fetchDataByNetwork() {
+        Log.d("MainActivity", "fetchDataByNetwork is called");
 
         RetrofitSingleton.getApiService()
                 .getWeatherAPI("上海", Setting.KEY)
@@ -216,8 +243,29 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                         return weatherAPI.heWeatherDataService.get(0).status.equals("ok");
                     }
                 })
+                .map(new Func1<WeatherAPI, Weather>() {
+                    @Override
+                    public Weather call(WeatherAPI weatherAPI) {
+                        return weatherAPI.heWeatherDataService.get(0);
+                    }
+                })
+                .doOnNext(new Action1<Weather>() {
+                    @Override
+                    public void call(Weather weather) {
+
+                        Gson gson = new GsonBuilder().create();
+
+                        String weatherJson = gson.toJson(weather);
+
+                        Log.d("MainActivity", "weatherJson------------------" + weatherJson);
+
+                        //设置Json数据在缓存中的保存时间
+                        mACache.put("weather", weatherJson,
+                                mSetting.getInt(Setting.AUTO_UPDATE, 1) * Setting.ONE_HOUR);
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(subscriber);
+                .subscribe(mSubscriber);
 
 
     }
@@ -260,7 +308,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 //获取当前定位结果来源，如网络定位结果，详见定位类型表
                 aMapLocation.getLocationType();
                 //将定位的“城市名称”保存到Setting中
-                mSetting.putString(Setting.CITY_NAME,aMapLocation.getCity());
+                mSetting.putString(Setting.CITY_NAME, aMapLocation.getCity());
                 //表明已经启动过定位；
                 isLocation = true;
             } else {
@@ -273,7 +321,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mLocationClient!=null) {
+        if (mLocationClient != null) {
             //销毁该界面时，停止高德定位功能
             mLocationClient.stopLocation();
             //并销毁高德定位客户端
