@@ -5,14 +5,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     android:orientation="vertical"
-    tools:showIn="@layout/app_bar_weatherapplication"
-    tools:context="com.example.administrator.myweatherapp.weatherapplication">
+    tools:showIn="@layout/app_bar_weatherapplication">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:layout_margin="8dp"
@@ -23,7 +22,8 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerview"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-        </android.support.v7.widget.RecyclerView>
+            android:layout_height="wrap_content"/>
     </android.support.v4.widget.SwipeRefreshLayout>
+
+    </RelativeLayout>
 </LinearLayout>

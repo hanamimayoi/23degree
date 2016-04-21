@@ -17,14 +17,16 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/icon_clock"/>
+            android:src="@mipmap/icon_clock"
+            android:tint="@color/cardview_light_background"/>
 
         <TextView
             android:id="@+id/tv_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="16:00"
-            android:layout_marginStart="12dp"/>
+            android:layout_marginStart="12dp"
+            android:textColor="#fff"/>
 
     </LinearLayout>
 
@@ -37,14 +39,16 @@
             android:layout_marginStart="18dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/icon_temp"/>
+            android:src="@mipmap/icon_temp"
+            android:tint="@color/cardview_light_background"/>
 
         <TextView
             android:id="@+id/tv_temp"
             android:layout_marginStart="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="12°"/>
+            android:text="12°"
+            android:textColor="#fff"/>
     </LinearLayout>
 
     <LinearLayout
@@ -56,7 +60,9 @@
             android:layout_marginEnd="12dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/icon_shidu"/>
+            android:src="@mipmap/icon_shidu"
+            android:tint="@color/cardview_light_background"
+            />
 
         <TextView
             android:minWidth="24sp"
@@ -64,7 +70,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="81%"/>
+            android:text="81%"
+            android:textColor="#fff"/>
 
     </LinearLayout>
 
@@ -78,13 +85,15 @@
             android:layout_marginStart="12dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/icon_windspeed"/>
+            android:src="@mipmap/icon_windspeed"
+            android:tint="@color/cardview_light_background"/>
 
         <TextView
             android:id="@+id/tv_windspeed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="14Km"/>
+            android:text="14Km"
+            android:textColor="#fff"/>
 
     </LinearLayout>
 
