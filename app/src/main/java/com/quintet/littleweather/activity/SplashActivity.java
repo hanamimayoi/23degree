@@ -95,5 +95,7 @@ public class SplashActivity extends Activity {
     private void enterMainActivity() {
         startActivity(new Intent(SplashActivity.this, MainActivity.class));
         finish();
+        //SplashActivity跳转MainActivity的动画；
+        overridePendingTransition(R.anim.fade_in,R.anim.fade_out);
     }
 }
