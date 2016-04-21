@@ -8,7 +8,8 @@
     android:clickable="true"
     android:foreground="?android:attr/selectableItemBackground"
     app:cardCornerRadius="10dp"
-    app:cardElevation="5dp"
+    app:cardElevation="2dp"
+    app:cardBackgroundColor="#3000"
     >
 
     <LinearLayout
@@ -28,7 +29,8 @@
                 android:layout_gravity="center_vertical"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:src="@mipmap/icon_cloth"/>
+                android:src="@mipmap/icon_cloth"
+                android:tint="@color/cardview_light_background" />
 
             <LinearLayout
                 android:layout_marginLeft="64dp"
@@ -40,13 +42,14 @@
                     android:id="@+id/cloth_brief"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="穿衣指数---"/>
+                    android:text="穿衣指数---"
+                    android:textColor="#fff"/>
 
                 <TextView
                     android:textSize="12sp"
                     android:id="@+id/cloth_txt"
                     android:layout_marginTop="2dp"
-                    android:textColor="#969696"
+                    android:textColor="#fff"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
@@ -62,7 +65,8 @@
                 android:layout_gravity="center_vertical"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:src="@mipmap/icon_sport"/>
+                android:src="@mipmap/icon_sport"
+                android:tint="@color/cardview_light_background"/>
 
             <LinearLayout
                 android:layout_marginLeft="64dp"
@@ -74,13 +78,14 @@
                     android:id="@+id/sport_brief"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="运动指数---"/>
+                    android:text="运动指数---"
+                    android:textColor="#fff"/>
 
                 <TextView
                     android:textSize="12sp"
                     android:id="@+id/sport_txt"
                     android:layout_marginTop="2dp"
-                    android:textColor="#969696"
+                    android:textColor="#fff"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
@@ -97,7 +102,8 @@
                 android:layout_gravity="center_vertical"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:src="@mipmap/icon_travel"/>
+                android:src="@mipmap/icon_travel"
+                android:tint="@color/cardview_light_background"/>
 
             <LinearLayout
                 android:layout_marginLeft="64dp"
@@ -109,13 +115,14 @@
                     android:id="@+id/travel_brief"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="旅游指数---"/>
+                    android:text="旅游指数---"
+                    android:textColor="#fff"/>
 
                 <TextView
                     android:textSize="12sp"
                     android:id="@+id/travel_txt"
                     android:layout_marginTop="2dp"
-                    android:textColor="#969696"
+                    android:textColor="#fff"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
@@ -132,7 +139,8 @@
                 android:layout_gravity="center_vertical"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:src="@mipmap/icon_flu"/>
+                android:src="@mipmap/icon_flu"
+                android:tint="@color/cardview_light_background"/>
 
             <LinearLayout
                 android:layout_marginLeft="64dp"
@@ -144,13 +152,14 @@
                     android:id="@+id/flu_brief"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="感冒指数---"/>
+                    android:text="感冒指数---"
+                    android:textColor="#fff"/>
 
                 <TextView
                     android:textSize="12sp"
                     android:id="@+id/flu_txt"
                     android:layout_marginTop="2dp"
-                    android:textColor="#969696"
+                    android:textColor="#fff"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
