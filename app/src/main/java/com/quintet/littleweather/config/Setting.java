@@ -57,4 +57,20 @@ public class Setting {
         mPrefs = context.getSharedPreferences("setting", Context.MODE_PRIVATE);
     }
 
+    public void putString(String key, String value) {
+        mPrefs.edit().putString(key, value).commit();
+    }
+
+    public String getString(String key, String defaultValue) {
+        return mPrefs.getString(key, defaultValue);
+    }
+
+    public void putInt(String key, int value) {
+        mPrefs.edit().putInt(key, value).commit();
+    }
+
+    public int getInt(String key, int defaultValue) {
+        return mPrefs.getInt(key, defaultValue);
+    }
+
 }
