@@ -26,8 +26,6 @@ import com.quintet.littleweather.bean.item;
 import com.quintet.littleweather.config.Setting;
 import com.quintet.littleweather.config.SpacesItemDecoration;
 import com.quintet.littleweather.https.RetrofitSingleton;
-import com.quintet.littleweather.utils.MyConstant;
-import com.quintet.littleweather.utils.SpTool;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -261,8 +259,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             if (aMapLocation.getErrorCode() == 0) {//定位成功回调信息，设置相关消息
                 //获取当前定位结果来源，如网络定位结果，详见定位类型表
                 aMapLocation.getLocationType();
-                //将定位的“城市名称”保存到SharedPreference中
-                SpTool.putString(getApplicationContext(), MyConstant.CITY_NAME, aMapLocation.getCity());
+                //将定位的“城市名称”保存到Setting中
+                mSetting.putString(Setting.CITY_NAME,aMapLocation.getCity());
                 //表明已经启动过定位；
                 isLocation = true;
             } else {
@@ -275,7 +273,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (!(mLocationClient == null)) {
+        if (mLocationClient!=null) {
             //销毁该界面时，停止高德定位功能
             mLocationClient.stopLocation();
             //并销毁高德定位客户端
