@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="2dp"
+    android:id="@+id/cardView"
+    android:clickable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    card_view:cardCornerRadius="2dp"
+    card_view:cardElevation="1dp"
+    card_view:cardBackgroundColor="#44000000">
+
+    <!--
+    android:background="?android:attr/selectableItemBackground"波纹有边界
+    android:background="?android:attr/selectableItemBackgroundBorderless"波纹超出边界
+    -->
+    <LinearLayout
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:src="@mipmap/icon_selectcity"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:tint="@color/cardview_light_background"/>
+
+        <TextView
+            android:id="@+id/item_city"
+            android:layout_marginLeft="16dp"
+            android:text="杭州"
+            android:textSize="16sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#fff"/>
+    </LinearLayout>
+</android.support.v7.widget.CardView>

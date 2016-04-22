@@ -1,5 +1,6 @@
 package com.quintet.littleweather.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
@@ -177,15 +178,17 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         int id = item.getItemId();
         if (id == R.id.nav_city) {
 
-            // Handle the camera action
+          //进入选择城市activity
+            startActivityForResult(new Intent(MainActivity.this, SelectCityActivity.class),1);
+
         } else if (id == R.id.nav_set) {
 
         } else if (id == R.id.nav_about) {
 
         }
 
-      /*  DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);*/
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
