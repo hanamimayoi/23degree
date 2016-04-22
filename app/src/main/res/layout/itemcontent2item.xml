@@ -20,14 +20,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@mipmap/icon_clock"
-                android:id="@+id/item2_tvtime_image"/>
+                android:id="@+id/item2_tvtime_image"
+                android:tint="@color/cardview_light_background"/>
 
             <TextView
                 android:id="@+id/item2_tvtime_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="16:00"
-                android:layout_marginStart="12dp" />
+                android:layout_marginStart="12dp"
+                android:textColor="#fff"/>
 
         </LinearLayout>
 

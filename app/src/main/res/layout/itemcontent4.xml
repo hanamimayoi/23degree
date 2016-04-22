@@ -47,12 +47,12 @@
         <TextView
             android:id="@+id/item4_advice_text"
             android:layout_marginTop="4dp"
-            android:textSize="10sp"
             android:layout_below="@+id/item4_date_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="少云。最高12℃。东北风 10 到 15 km/h"
-            android:textColor="#fff"/>
+            android:textColor="#fff"
+            android:textSize="10sp" />
     </RelativeLayout>
     </LinearLayout>
 </LinearLayout>

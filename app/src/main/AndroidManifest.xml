@@ -26,7 +26,7 @@
     <application
         android:name=".base.BaseApplication"
         android:allowBackup="true"
-        android:icon="@drawable/icon_weather"
+        android:icon="@mipmap/icon_weather"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -38,7 +38,7 @@
 
         <activity
             android:name=".activity.SplashActivity"
-            android:icon="@drawable/icon_weather"
+            android:icon="@mipmap/icon_weather"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
