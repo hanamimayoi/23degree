@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.quintet.littleweather.R;
-import com.quintet.littleweather.bean.item;
+import com.quintet.littleweather.bean.Weather;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +20,8 @@ import java.util.List;
  */
    public class RecycleView extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     {
-       static private List<item> card1;
-       static private List<item> card2;
-       static private List<item> card3;
-       static private List<item> card4;
        static private Context context;
-
+       static private Weather weather;
         //建立枚举 4个item 类型
         public enum ITEM_TYPE
         {
@@ -34,12 +30,9 @@ import java.util.List;
             ITEM3,
             ITEM4
         }
-       public RecycleView(List<item> list1,List<item> list2,List<item> list3,List<item> list4,Context context)
+       public RecycleView(Weather weather,Context context)
        {
-           card1 =list1;
-           card2 =list2;
-           card3 =list3;
-           card4 =list4;
+           this.weather=weather;
            this.context=context;
        }
 
@@ -69,7 +62,7 @@ import java.util.List;
         @Override
         public int getItemCount()
         {
-            return card1.size();
+            return 4;
         }
 
         //在此处找到并加载RecycleView内不同item的布局。
@@ -154,7 +147,7 @@ import java.util.List;
                 item2_tvhumidity_text_list = new ArrayList<TextView>();
                 item2_tvwindspeed_image_list = new ArrayList<ImageView>();
                 item2_tvwindspeed_text_list = new ArrayList<TextView>();
-                for(int i=0;i<card2.size();i++)
+                for(int i=0;i<weather.hourlyForecast.size();i++)
                 {
                     View viewitem=View.inflate(context,R.layout.itemcontent2item,null);
                     //item2时钟图片
@@ -181,21 +174,49 @@ import java.util.List;
         //item3的ViewHolder
         public static class itemView3 extends  RecyclerView.ViewHolder
         {
-            TextView clothtxt;
-            TextView sporttxt;
-            TextView traveltxt;
-            TextView flutxt;
+            TextView item3_cloth_brief;
+            TextView item3_sport_brief;
+            TextView item3_travel_brief;
+            TextView item3_flu_brief;
+            ImageView item3_cloth_image;
+            ImageView item3_sport_image;
+            ImageView item3_travel_image;
+            ImageView item3_flu_image;
+            TextView item3_cloth_txt;
+            TextView item3_sport_txt;
+            TextView item3_travel_txt;
+            TextView item3_flu_txt;
+
             public itemView3(View itemView)
             {
                 super(itemView);
+                //item3的穿衣图片
+                item3_cloth_image = (ImageView) itemView.findViewById(R.id.item3_cloth_image);
                 //item3的穿衣指数值
-                clothtxt= (TextView) itemView.findViewById(R.id.cloth_txt);
+                item3_cloth_brief = (TextView) itemView.findViewById(R.id.cloth_brief);
+                //item3的穿衣介绍
+                item3_cloth_txt = (TextView) itemView.findViewById(R.id.cloth_txt);
+
+                //item3的运动图片
+                item3_sport_image = (ImageView) itemView.findViewById(R.id.item3_sport_image);
                 //item3的运动指数值
-                sporttxt= (TextView) itemView.findViewById(R.id.sport_txt);
+                item3_sport_brief = (TextView) itemView.findViewById(R.id.sport_brief);
+                //item3的运动介绍
+                item3_sport_txt = (TextView) itemView.findViewById(R.id.sport_txt);
+
+                //item3的旅游图片
+                item3_travel_image = (ImageView) itemView.findViewById(R.id.item3_travel_image);
                 //item3的旅游指数值
-                traveltxt= (TextView) itemView.findViewById(R.id.travel_txt);
+                item3_travel_brief = (TextView) itemView.findViewById(R.id.travel_brief);
+                //item3的旅游介绍
+                item3_travel_txt = (TextView) itemView.findViewById(R.id.travel_txt);
+
+                //item3的感冒图片
+                item3_flu_image = (ImageView) itemView.findViewById(R.id.item3_flu_image);
                 //item3的感冒指数值
-                flutxt= (TextView) itemView.findViewById(R.id.flu_txt);
+                item3_flu_brief = (TextView) itemView.findViewById(R.id.flu_brief);
+                //item3的感冒介绍
+                item3_flu_txt = (TextView) itemView.findViewById(R.id.flu_txt);
             }
         }
 
@@ -214,8 +235,8 @@ import java.util.List;
                 item4_date_text_list = new ArrayList<TextView>();
                 item4_temp_text_list = new ArrayList<TextView>();
                 item4_advice_text_list = new ArrayList<TextView>();
-                for(int i=0;i<card4.size();i++)
-                {
+                for(int i=0;i<weather.dailyForecast.size();i++)
+               {
                     View viewitem=View.inflate(context,R.layout.itemcontent4item,null);
                     item4_left_image_list.add((ImageView)(viewitem.findViewById(R.id.item4_left_image)));
                     item4_date_text_list.add((TextView)(viewitem.findViewById(R.id.item4_date_text)));
@@ -231,22 +252,171 @@ import java.util.List;
         {
              if(holder instanceof itemView1)
              {
-
+                 //填充item1天气图标
+                 switch (weather.now.cond.txt)
+                 {
+                     case "未知":
+                         (((itemView1) holder).item1_weather_image).setImageResource(R.mipmap.icon_none);
+                         break;
+                     case "晴":
+                         (((itemView1) holder).item1_weather_image).setImageResource(R.mipmap.type_one_sunny);
+                         break;
+                     case "阴":
+                         (((itemView1) holder).item1_weather_image).setImageResource(R.mipmap.type_one_cloudy);
+                         break;
+                     case "多云":
+                         (((itemView1) holder).item1_weather_image).setImageResource(R.mipmap.type_one_cloudy);
+                         break;
+                     case "少云":
+                         (((itemView1) holder).item1_weather_image).setImageResource(R.mipmap.type_one_cloudy);
+                         break;
+                     case "晴间多云":
+                         (((itemView1) holder).item1_weather_image).setImageResource(R.mipmap.type_one_cloudytosunny);
+                         break;
+                     case "小雨":
+                         (((itemView1) holder).item1_weather_image).setImageResource(R.mipmap.type_one_light_rain);
+                         break;
+                     case "中雨":
+                         (((itemView1) holder).item1_weather_image).setImageResource(R.mipmap.type_one_heavy_rain);
+                         break;
+                     case "大雨":
+                         (((itemView1) holder).item1_weather_image).setImageResource(R.mipmap.type_one_heavy_rain);
+                         break;
+                     case "阵雨":
+                         (((itemView1) holder).item1_weather_image).setImageResource(R.mipmap.type_one_thunderstorm);
+                         break;
+                     case "雷阵雨":
+                         (((itemView1) holder).item1_weather_image).setImageResource(R.mipmap.type_one_thunderstorm);
+                         break;
+                     case "霾":
+                         (((itemView1) holder).item1_weather_image).setImageResource(R.mipmap.type_one_fog);
+                         break;
+                     case "雾":
+                         (((itemView1) holder).item1_weather_image).setImageResource(R.mipmap.type_one_fog);
+                         break;
+                 }
+                 //填充item1气温字符串
+                 (((itemView1) holder).item1_temp_flu_text).setText(weather.now.tmp);
+                 //填充item1最高气温字符串
+                 (((itemView1) holder).item1_temp_max_text).setText(weather.dailyForecast.get(0).tmp.max);
+                 //填充item1最低气温字符串
+                 (((itemView1) holder).item1_temp_min_text).setText(weather.dailyForecast.get(0).tmp.min);
+                 //填充item1 PM2.5的字符串
+                 (((itemView1) holder).item1_temp_pm).setText(weather.aqi.city.pm25);
+                 //填充item1空气质量字符串
+                 (((itemView1) holder).item1_temp_quality).setText(weather.aqi.city.qlty);
              }
              else
              if(holder instanceof itemView2)
              {
+                 for(int i=0;i<weather.hourlyForecast.size();i++)
+                 {
+                     //填充item2的时刻表图片
+                     (((itemView2) holder).item2_tvtime_image_list).get(i).setImageResource(R.mipmap.icon_clock);
+                     //填充item2的时刻字符串
 
+                     String[] split = weather.hourlyForecast.get(i).date.split(" ");
+                     (((itemView2) holder).item2_tvtime_text_list).get(i).setText(split[1]);
+                     //填充item2的温度图片
+                     (((itemView2) holder).item2_tvtemp_image_list).get(i).setImageResource(R.mipmap.icon_temp);
+                     //填充item2的温度字符串
+                     (((itemView2) holder).item2_tvtemp_text_list).get(i).setText(weather.hourlyForecast.get(i).tmp);
+                     //填充item2的湿度图片
+                     (((itemView2) holder).item2_tvhumidity_image_list).get(i).setImageResource(R.mipmap.icon_shidu);
+                     //填充item2的湿度字符串
+                     (((itemView2) holder).item2_tvhumidity_text_list).get(i).setText(weather.hourlyForecast.get(i).hum);
+                     //填充item2的风速图片
+                     (((itemView2) holder).item2_tvwindspeed_image_list).get(i).setImageResource(R.mipmap.icon_windspeed);
+                     //填充item2的风速字符串
+                     (((itemView2) holder).item2_tvwindspeed_text_list).get(i).setText(weather.hourlyForecast.get(i).wind.spd);
+                 }
              }
              else
              if(holder instanceof itemView3)
              {
+                 //填充item3的衣服图片
+                 (((itemView3) holder).item3_cloth_image).setImageResource(R.mipmap.icon_cloth);
+                 //填充item3的穿衣指数字符串
+                 (((itemView3) holder).item3_cloth_brief).setText(weather.suggestion.drsg.brf);
+                 //填充item3的穿衣介绍
+                 (((itemView3) holder).item3_cloth_txt).setText(weather.suggestion.drsg.txt);
 
+                 //填充item3的运动图片
+                 (((itemView3) holder).item3_sport_image).setImageResource(R.mipmap.icon_sport);
+                 //填充item3的运动指数字符串
+                 (((itemView3) holder).item3_sport_brief).setText(weather.suggestion.sport.brf);
+                 //填充item3的运动介绍
+                 (((itemView3) holder).item3_cloth_txt).setText(weather.suggestion.sport.txt);
+
+                 //填充item3的旅游图片
+                 (((itemView3) holder).item3_cloth_image).setImageResource(R.mipmap.icon_travel);
+                 //填充item3的旅游指数字符串
+                 (((itemView3) holder).item3_cloth_brief).setText(weather.suggestion.trav.brf);
+                 //填充item3的旅游介绍
+                 (((itemView3) holder).item3_cloth_txt).setText(weather.suggestion.trav.txt);
+
+                 //填充item3的感冒图片
+                 (((itemView3) holder).item3_cloth_image).setImageResource(R.mipmap.icon_flu);
+                 //填充item3的感冒指数字符串
+                 (((itemView3) holder).item3_cloth_brief).setText(weather.suggestion.flu.brf);
+                 //填充item3的感冒介绍
+                 (((itemView3) holder).item3_cloth_txt).setText(weather.suggestion.flu.txt);
              }
              else
              if(holder instanceof itemView4)
              {
-
+                 for(int i=0;i<weather.dailyForecast.size();i++)
+                 {
+                     //填充item4的天气图片
+                     switch (weather.dailyForecast.get(i).cond.txtD)
+                     {
+                         case "未知":
+                             (((itemView4) holder).item4_left_image_list).get(i).setImageResource(R.mipmap.icon_none);
+                             break;
+                         case "晴":
+                             (((itemView4) holder).item4_left_image_list).get(i).setImageResource(R.mipmap.type_one_sunny);
+                             break;
+                         case "阴":
+                             (((itemView4) holder).item4_left_image_list).get(i).setImageResource(R.mipmap.type_one_cloudy);
+                             break;
+                         case "多云":
+                             (((itemView4) holder).item4_left_image_list).get(i).setImageResource(R.mipmap.type_one_cloudy);
+                             break;
+                         case "少云":
+                             (((itemView4) holder).item4_left_image_list).get(i).setImageResource(R.mipmap.type_one_cloudy);
+                             break;
+                         case "晴间多云":
+                             (((itemView4) holder).item4_left_image_list).get(i).setImageResource(R.mipmap.type_one_cloudytosunny);
+                             break;
+                         case "小雨":
+                             (((itemView4) holder).item4_left_image_list).get(i).setImageResource(R.mipmap.type_one_light_rain);
+                             break;
+                         case "中雨":
+                             (((itemView4) holder).item4_left_image_list).get(i).setImageResource(R.mipmap.type_one_heavy_rain);
+                             break;
+                         case "大雨":
+                             (((itemView4) holder).item4_left_image_list).get(i).setImageResource(R.mipmap.type_one_heavy_rain);
+                             break;
+                         case "阵雨":
+                             (((itemView4) holder).item4_left_image_list).get(i).setImageResource(R.mipmap.type_one_thunderstorm);
+                             break;
+                         case "雷阵雨":
+                             (((itemView4) holder).item4_left_image_list).get(i).setImageResource(R.mipmap.type_one_thunderstorm);
+                             break;
+                         case "霾":
+                             (((itemView4) holder).item4_left_image_list).get(i).setImageResource(R.mipmap.type_one_fog);
+                             break;
+                         case "雾":
+                             (((itemView4) holder).item4_left_image_list).get(i).setImageResource(R.mipmap.type_one_fog);
+                             break;
+                     }
+                     //填充日期字符串
+                     (((itemView4) holder).item4_date_text_list).get(i).setText(weather.dailyForecast.get(i).date);
+                     //填充最高温度最低温度字符串
+                     (((itemView4) holder).item4_temp_text_list).get(i).setText(weather.dailyForecast.get(i).tmp.max+weather.dailyForecast.get(i).tmp.min);
+                     //填充详细建议字符串(包括风力，风向，风速，降水概率)
+                     (((itemView4) holder).item4_advice_text_list).get(i).setText(weather.dailyForecast.get(i).wind.sc+weather.dailyForecast.get(i).wind.dir+weather.dailyForecast.get(i).wind.spd+weather.dailyForecast.get(i).pop);
+                 }
              }
         }
 }

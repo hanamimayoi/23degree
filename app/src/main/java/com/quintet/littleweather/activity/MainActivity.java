@@ -26,13 +26,9 @@ import com.quintet.littleweather.adapter.RecycleView;
 import com.quintet.littleweather.base.BaseActivity;
 import com.quintet.littleweather.bean.Weather;
 import com.quintet.littleweather.bean.WeatherAPI;
-import com.quintet.littleweather.bean.item;
 import com.quintet.littleweather.config.Setting;
 import com.quintet.littleweather.config.SpacesItemDecoration;
 import com.quintet.littleweather.https.RetrofitSingleton;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -51,10 +47,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private AMapLocationClient mLocationClient = null;
     //高德定位参数设置
     private AMapLocationClientOption mLocationOption = null;
-    private List<item> list1;
-    private List<item> list2;
-    private List<item> list3;
-    private List<item> list4;
 
     //当前的城市名字
     private Subscriber<Weather> mSubscriber;
@@ -63,7 +55,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //设置沉浸式状态栏：在此选择变透明的方式
-        setContentView(R.layout.activity_weatherapplication);
+        setContentView(R.layout.mainactivity);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         //设置工具栏
@@ -82,18 +74,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         //找到swiperefresh控件和recyleview控件
         mSwipeRefreshWidget = (SwipeRefreshLayout) findViewById(R.id.swiprefresh);
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
-        list1 = new ArrayList<item>();
-        list2 = new ArrayList<item>();
-        list3 = new ArrayList<item>();
-        list4 = new ArrayList<item>();
-        //加载RecyelerView控件
-        InitRecycleView();
         //加载SwipeRefreshLayout控件
         InitSwipeRefresh();
-
         fetchData();
-
-
     }
 
     //设置下拉刷新
@@ -117,26 +100,15 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     //设置RecycleView列表,瀑布流!
-    public void InitRecycleView() {
+    public void InitRecycleView(Weather weather) {
         //设置layoutManager
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         //设置adapter
-        initData();
-        adapter = new RecycleView(list1, list2, list3, list4,this);
+        adapter = new RecycleView(weather,this);
         mRecyclerView.setAdapter(adapter);
         //设置item之间的间隔
         SpacesItemDecoration decoration = new SpacesItemDecoration(16);
         mRecyclerView.addItemDecoration(decoration);
-    }
-
-    //在此处将想要填充的数据填入bean中，并且将填充好的bean装入list中，以便给RecycleView.adapter用。
-    public void initData() {
-        for (int i = 0; i < 4; i++) {
-            list1.add(new item());
-            list2.add(new item());
-            list3.add(new item());
-            list4.add(new item());
-        }
     }
 
     public void onBackPressed() {
@@ -208,7 +180,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
             @Override
             public void onNext(Weather weather) {
-                Log.d("MainActivity", "weatherJson------------------" + new Gson().toJson(weather));
+                //加载RecyelerView控件
+                InitRecycleView(weather);
             }
         };
 
@@ -266,8 +239,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(mSubscriber);
-
-
     }
 
     /**

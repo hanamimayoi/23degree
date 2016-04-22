@@ -1019,9 +1019,5 @@ public class Weather {
             public String spd;
 
         }
-
-
     }
-
-
 }

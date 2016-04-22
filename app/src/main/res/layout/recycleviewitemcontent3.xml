@@ -30,7 +30,8 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:src="@mipmap/icon_cloth"
-                android:tint="@color/cardview_light_background" />
+                android:tint="@color/cardview_light_background"
+                android:id="@+id/item3_cloth_image"/>
 
             <LinearLayout
                 android:layout_marginLeft="64dp"
@@ -66,7 +67,8 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:src="@mipmap/icon_sport"
-                android:tint="@color/cardview_light_background"/>
+                android:tint="@color/cardview_light_background"
+                android:id="@+id/item3_sport_image"/>
 
             <LinearLayout
                 android:layout_marginLeft="64dp"
@@ -103,7 +105,8 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:src="@mipmap/icon_travel"
-                android:tint="@color/cardview_light_background"/>
+                android:tint="@color/cardview_light_background"
+                android:id="@+id/item3_travel_image"/>
 
             <LinearLayout
                 android:layout_marginLeft="64dp"
@@ -140,7 +143,8 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:src="@mipmap/icon_flu"
-                android:tint="@color/cardview_light_background"/>
+                android:tint="@color/cardview_light_background"
+                android:id="@+id/item3_flu_image"/>
 
             <LinearLayout
                 android:layout_marginLeft="64dp"
