@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="16dp"
+        android:paddingTop="16dp"
+        android:paddingLeft="32dp"
+        android:paddingRight="16dp"
+        android:id="@+id/item4_LL_theoutersecond">
+        <ImageView
+            android:id="@+id/item4_left_image"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:src="@mipmap/type_one_sunny" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="36dp">
+
+            <TextView
+                android:id="@+id/item4_date_text"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="今日"
+                android:textColor="#fff"/>
+
+            <TextView
+                android:textSize="18sp"
+                android:id="@+id/item4_temp_text"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="5° ~ 13°"
+                android:textColor="#fff"/>
+
+            <TextView
+                android:id="@+id/item4_advice_text"
+                android:layout_marginTop="4dp"
+                android:textSize="10sp"
+                android:layout_below="@+id/item4_date_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="少云。最高12℃。东北风 10 到 15 km/h"
+                android:textColor="#fff"/>
+        </RelativeLayout>
+    </LinearLayout>

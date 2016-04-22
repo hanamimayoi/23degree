@@ -156,25 +156,24 @@ import java.util.List;
                 item2_tvwindspeed_text_list = new ArrayList<TextView>();
                 for(int i=0;i<card2.size();i++)
                 {
-                    View view=View.inflate(context,R.layout.itemcontent2,null);
-                    View itemview=view.findViewById(R.id.item2_LL_theoutersecond);
+                    View viewitem=View.inflate(context,R.layout.itemcontent2item,null);
                     //item2时钟图片
-                    item2_tvtime_image_list.add((ImageView)(itemview.findViewById(R.id.item2_tvtime_image)));
+                    item2_tvtime_image_list.add((ImageView)(viewitem.findViewById(R.id.item2_tvtime_image)));
                     //item2时间点text
-                    item2_tvtime_text_list.add((TextView) (itemview.findViewById(R.id.item2_tvtime_text)));
+                    item2_tvtime_text_list.add((TextView) (viewitem.findViewById(R.id.item2_tvtime_text)));
                     //item2温度图片
-                    item2_tvtemp_image_list.add((ImageView) (itemview.findViewById(R.id.item2_tvtemp_image)));
+                    item2_tvtemp_image_list.add((ImageView) (viewitem.findViewById(R.id.item2_tvtemp_image)));
                     //item2温度text
-                    item2_tvtemp_text_list.add((TextView) (itemview.findViewById(R.id.item2_tvtemp_text)));
+                    item2_tvtemp_text_list.add((TextView) (viewitem.findViewById(R.id.item2_tvtemp_text)));
                     //item2湿度图片
-                    item2_tvhumidity_image_list.add((ImageView) (itemview.findViewById(R.id.item2_tvhumidity_image)));
+                    item2_tvhumidity_image_list.add((ImageView) (viewitem.findViewById(R.id.item2_tvhumidity_image)));
                     //item2湿度text
-                    item2_tvhumidity_text_list.add((TextView) (itemview.findViewById(R.id.item2_tvhumidity_text)));
+                    item2_tvhumidity_text_list.add((TextView) (viewitem.findViewById(R.id.item2_tvhumidity_text)));
                     //item2风速图片
-                    item2_tvwindspeed_image_list.add((ImageView) (itemview.findViewById(R.id.item2_tvwindspeed_image)));
+                    item2_tvwindspeed_image_list.add((ImageView) (viewitem.findViewById(R.id.item2_tvwindspeed_image)));
                     //item2风速text
-                    item2_tvwindspeed_text_list.add((TextView) (itemview.findViewById(R.id.item2_tvwindspeed_text)));
-                    item2list.addView(itemview);
+                    item2_tvwindspeed_text_list.add((TextView) (viewitem.findViewById(R.id.item2_tvwindspeed_text)));
+                    item2list.addView(viewitem);
                 }
             }
         }
@@ -217,13 +216,12 @@ import java.util.List;
                 item4_advice_text_list = new ArrayList<TextView>();
                 for(int i=0;i<card4.size();i++)
                 {
-                    View view = View.inflate(context, R.layout.itemcontent4, null);
-                    View itemview = view.findViewById(R.id.item4_LL_theoutersecond);
-                    item4_left_image_list.add((ImageView)(itemview.findViewById(R.id.item4_left_image)));
-                    item4_date_text_list.add((TextView)(itemview.findViewById(R.id.item4_date_text)));
-                    item4_temp_text_list.add((TextView)(itemview.findViewById(R.id.item4_temp_text)));
-                    item4_advice_text_list.add((TextView)(itemview.findViewById(R.id. item4_advice_text)));
-                    item4list.addView(itemview);
+                    View viewitem=View.inflate(context,R.layout.itemcontent4item,null);
+                    item4_left_image_list.add((ImageView)(viewitem.findViewById(R.id.item4_left_image)));
+                    item4_date_text_list.add((TextView)(viewitem.findViewById(R.id.item4_date_text)));
+                    item4_temp_text_list.add((TextView)(viewitem.findViewById(R.id.item4_temp_text)));
+                    item4_advice_text_list.add((TextView)(viewitem.findViewById(R.id. item4_advice_text)));
+                    item4list.addView(viewitem);
                 }
             }
         }

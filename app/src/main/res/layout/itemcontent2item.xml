@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:id="@+id/item2_LL_theoutersecond">
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/item2_tvtime">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon_clock"
+                android:id="@+id/item2_tvtime_image"/>
+
+            <TextView
+                android:id="@+id/item2_tvtime_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="16:00"
+                android:layout_marginStart="12dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/item2_tvtemp">
+
+            <ImageView
+                android:layout_marginStart="18dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon_temp"
+                android:id="@+id/item2_tvtemp_image"
+                android:tint="@color/cardview_light_background"/>
+
+            <TextView
+                android:id="@+id/item2_tvtemp_text"
+                android:layout_marginStart="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="12°"
+                android:textColor="#fff"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/item2_tvhumidity">
+
+            <ImageView
+                android:layout_marginEnd="12dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon_shidu"
+                android:tint="@color/cardview_light_background"
+                android:id="@+id/item2_tvhumidity_image"
+                />
+
+
+            <TextView
+                android:minWidth="24sp"
+                android:id="@+id/item2_tvhumidity_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="81%"
+                android:textColor="#fff"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/item2_tvwindspeed">
+
+            <ImageView
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="12dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon_windspeed"
+                android:id="@+id/item2_tvwindspeed_image"
+                android:tint="@color/cardview_light_background"/>
+
+            <TextView
+                android:id="@+id/item2_tvwindspeed_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="14Km"
+                android:textColor="#fff"/>
+        </LinearLayout>
+    </LinearLayout>
