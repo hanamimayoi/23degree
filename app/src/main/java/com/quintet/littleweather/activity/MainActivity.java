@@ -102,9 +102,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         //找到swiperefresh控件和recyleview控件
         mSwipeRefreshWidget = (SwipeRefreshLayout) findViewById(R.id.swiprefresh);
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
+        InitRecycleView();
         //加载SwipeRefreshLayout控件
         InitSwipeRefresh();
-        InitRecycleView();
+        new RefreshHandler().sendEmptyMessage(1);
+
         fetchData();
     }
 
@@ -178,7 +180,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                         .replace("自治区", "")
                         .replace("特别行政区", "")
                         .replace("地区", "")
-                        .replace("盟", "");
+                        .replace("盟", "")
+                        .replace("藏族自治州", "")
+                        .replace("藏族羌族自治州", "")
+                        .replace("彝族自治州", "");
 
                 new RefreshHandler().sendEmptyMessage(1);
                 fetchDataByNetwork(query);
@@ -425,7 +430,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     .replace("自治区", "")
                     .replace("特别行政区", "")
                     .replace("地区", "")
-                    .replace("盟", "");
+                    .replace("盟", "")
+                    .replace("藏族自治州", "")
+                    .replace("藏族羌族自治州", "")
+                    .replace("彝族自治州", "");
             new RefreshHandler().sendEmptyMessage(1);
             fetchDataByNetwork(city);
         }
