@@ -289,7 +289,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         if (!TextUtils.isEmpty(weatherJson)) {
             Gson gson = new GsonBuilder().create();
             Weather weather = gson.fromJson(weatherJson, Weather.class);
-            Observable.just(weather).subscribe(mSubscriber);
+            Observable.just(weather).subscribe(mObserver);
         } else {
             //没有缓存就根据SharedPreference保存的城市名去请求数据，默认是上海
             fetchDataByNetwork(mSetting.getString(Setting.CITY_NAME, "上海"));
