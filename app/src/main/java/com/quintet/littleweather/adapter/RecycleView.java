@@ -401,7 +401,9 @@ import java.util.List;
                     }
                     else
                     {
-                        (((itemView4) holder).item4_date_text_list).get(i).setText(weather.dailyForecast.get(i).date);
+                        char[] date=weather.dailyForecast.get(i).date.toCharArray();
+                        String DATE=String.valueOf(date[5])+String.valueOf(date[6])+"月"+String.valueOf(date[8])+String.valueOf(date[9])+"日";
+                        (((itemView4) holder).item4_date_text_list).get(i).setText(DATE);
                     }
                     //填充最高温度最低温度字符串
                     char[] splitmax = weather.dailyForecast.get(i).tmp.max.toCharArray();
