@@ -116,7 +116,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             @Override
             public void onClick(View v) {
                 //给我一个String 存入shareprefence
-                Toast.makeText(MainActivity.this, mCityName, Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, mSetting.getString(Setting.CITY_NAME,"上海")
+                        ,Toast.LENGTH_SHORT).show();
             }
         });
     }
