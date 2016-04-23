@@ -1,6 +1,7 @@
 package com.quintet.littleweather.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -94,18 +95,22 @@ import java.util.List;
 
         public itemView1(View itemView) {
             super(itemView);
+            View view=View.inflate(context,R.layout.itemcontent1,null);
             //item1天气图标
-            item1_weather_image = (ImageView) itemView.findViewById(R.id.iv_weather);
+            item1_weather_image = (ImageView) view.findViewById(R.id.iv_weather);
             //item1温度
-            item1_temp_flu_text = (TextView) itemView.findViewById(R.id.tv_temp_flu);
+            item1_temp_flu_text = (TextView) view.findViewById(R.id.tv_temp_flu);
             //item1最高温
-            item1_temp_max_text = (TextView) itemView.findViewById(R.id.tv_temp_max);
+            item1_temp_max_text = (TextView) view.findViewById(R.id.tv_temp_max);
             //item1最低温
-            item1_temp_min_text = (TextView) itemView.findViewById(R.id.tv_temp_min);
+            item1_temp_min_text = (TextView) view.findViewById(R.id.tv_temp_min);
             //item1 PM2.5值
-            item1_temp_pm = (TextView) itemView.findViewById(R.id.tv_temp_pm);
+            item1_temp_pm = (TextView) view.findViewById(R.id.tv_temp_pm);
             //item1空气质量
-            item1_temp_quality = (TextView) itemView.findViewById(R.id.tv_temp_quality);
+            item1_temp_quality = (TextView) view.findViewById(R.id.tv_temp_quality);
+            View rl=itemView.findViewById(R.id.item1_RL);
+            ((CardView)itemView).removeView(rl);
+            ((CardView)itemView).addView(view);
         }
     }
 
@@ -291,7 +296,6 @@ import java.util.List;
                 //填充item2的时刻表图片
                 (((itemView2) holder).item2_tvtime_image_list).get(i).setImageResource(R.mipmap.icon_clock);
                 //填充item2的时刻字符串
-
                 String[] split = weather.hourlyForecast.get(i).date.split(" ");
                 (((itemView2) holder).item2_tvtime_text_list).get(i).setText(split[1]);
                 //填充item2的温度图片
@@ -320,21 +324,21 @@ import java.util.List;
             //填充item3的运动指数字符串
             (((itemView3) holder).item3_sport_brief).setText(weather.suggestion.sport.brf);
             //填充item3的运动介绍
-            (((itemView3) holder).item3_cloth_txt).setText(weather.suggestion.sport.txt);
+            (((itemView3) holder).item3_sport_txt).setText(weather.suggestion.sport.txt);
 
             //填充item3的旅游图片
-            (((itemView3) holder).item3_cloth_image).setImageResource(R.mipmap.icon_travel);
+            (((itemView3) holder).item3_travel_image).setImageResource(R.mipmap.icon_travel);
             //填充item3的旅游指数字符串
-            (((itemView3) holder).item3_cloth_brief).setText(weather.suggestion.trav.brf);
+            (((itemView3) holder).item3_travel_brief).setText(weather.suggestion.trav.brf);
             //填充item3的旅游介绍
-            (((itemView3) holder).item3_cloth_txt).setText(weather.suggestion.trav.txt);
+            (((itemView3) holder).item3_travel_txt).setText(weather.suggestion.trav.txt);
 
             //填充item3的感冒图片
-            (((itemView3) holder).item3_cloth_image).setImageResource(R.mipmap.icon_flu);
+            (((itemView3) holder).item3_flu_image).setImageResource(R.mipmap.icon_flu);
             //填充item3的感冒指数字符串
-            (((itemView3) holder).item3_cloth_brief).setText(weather.suggestion.flu.brf);
+            (((itemView3) holder).item3_flu_brief).setText(weather.suggestion.flu.brf);
             //填充item3的感冒介绍
-            (((itemView3) holder).item3_cloth_txt).setText(weather.suggestion.flu.txt);
+            (((itemView3) holder).item3_flu_txt).setText(weather.suggestion.flu.txt);
         } else if (holder instanceof itemView4) {
             for (int i = 0; i < weather.dailyForecast.size(); i++) {
                    //填充天气图片
@@ -408,8 +412,7 @@ import java.util.List;
                     String str4 = String.valueOf(splitmin[1]);
                     (((itemView4) holder).item4_temp_text_list).get(i).setText(str3 + str4 + "°~" + str1 + str2 + "°");
                     //填充详细建议字符串(包括风力，风向，风速，降水概率)
-                    (((itemView4) holder).item4_advice_text_list).get(i).setText(weather.dailyForecast.get(i).wind.sc + weather.dailyForecast.get(i).wind.dir + weather.dailyForecast.get(i).wind.spd + weather.dailyForecast.get(i).pop);
-
+                    (((itemView4) holder).item4_advice_text_list).get(i).setText("天气:"+weather.dailyForecast.get(i).cond.txtD+"/最高温度:"+str1+str2+"°C"+"/风力:"+weather.dailyForecast.get(i).wind.sc +"/风向:"+weather.dailyForecast.get(i).wind.dir +"/风速:"+weather.dailyForecast.get(i).wind.spd +"/降水概率:"+weather.dailyForecast.get(i).pop+"%");
             }
         }
     }
