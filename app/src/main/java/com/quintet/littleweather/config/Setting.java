@@ -7,9 +7,9 @@ import com.quintet.littleweather.base.BaseApplication;
 
 /**
  * 设置
- * <p>
+ * <p/>
  * 单例
- * <p>
+ * <p/>
  * Created by hanami on 2016/4/19.
  */
 public class Setting {
@@ -18,18 +18,17 @@ public class Setting {
 
     public static final String CLEAR_CACHE = "clear_cache";//清理缓存
 
-    public static final String AUTO_UPDATE = "change_update_time";//自动更新时长.0,1,3,6
+    public static final String CACHE_TIME = "cache_time";//缓存数据保存的时长
 
-    public static final String CITY_NAME = "城市"; //在setting里保存的城市名字
+    public static final String CITY_NAME = "city_name"; //在setting里保存的城市名字
 
-    public static final String HOUR = "小时"; //当前时间的小时
-
-    public static final String HOUR_SELECT = "hour_select";//更新频率，和AUTO_UPDATE的区别？
-
+    public static final String HOUR_SELECT = "hour_select";//SettingFragment的缓存时长List显示的时候的默认选项
 
     public static final String KEY = "e7de0d6bf92744a5aeb829bb3cf6c826";//和风天气的KEY
 
     public static final int ONE_HOUR = 3600;//一小时
+
+    public static final String AUTO_LOCATION = "auto_location";//允许自动定位
 
 
     private SharedPreferences mPrefs;

@@ -65,6 +65,17 @@
         <!--include标签是重用以前已经写过的代码，这样可提高代码利用率，节约空间-->
         <include layout="@layout/maincontent" />
 
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/fab_margin"
+            app:borderWidth="0dp"
+            app:layout_anchor="@id/coord"
+            app:layout_anchorGravity="end|bottom"
+            android:src="@drawable/ic_favorite_24dp"/>
+
+
     </android.support.design.widget.CoordinatorLayout>
 
 

@@ -102,12 +102,12 @@ public class SelectCityActivity extends BaseActivity {
     }
 
 
-
     private void queryProvinces() {
         mCollapsingToolbarLayout.setTitle("选择省份");
 
         Observer<Province> observer = new Observer<Province>() {
-            @Override public void onCompleted() {
+            @Override
+            public void onCompleted() {
                 currentLevel = LEVEL_PROVINCE;
                 //mCityAdapter.notifyDataSetChanged();
                 mSelectCityAdapter.notifyDataSetChanged();
@@ -115,28 +115,31 @@ public class SelectCityActivity extends BaseActivity {
                 //    mProgressBar.setVisibility(View.GONE);
             }
 
-
-            @Override public void onError(Throwable e) {
-
+            @Override
+            public void onError(Throwable e) {
 
             }
 
-
-            @Override public void onNext(Province province) {
+            @Override
+            public void onNext(Province province) {
                 dataList.add(province.ProName);
             }
         };
 
-        Observable.defer(new Func0<Observable<Province>>() {
-            @Override public Observable<Province> call() {
-                // provincesList = mWeatherDB.loadProvinces(mDBManager.getDatabase());
-                db = SQLiteDatabase.openOrCreateDatabase("data/data/com.quintet.littleweather/china_city.db", null);
-                provincesList = DBUtils.getAllProvince(db);
-                dataList.clear();
-                return Observable.from(provincesList);
-            }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
-
+        Observable
+                .defer(new Func0<Observable<Province>>() {
+                    @Override
+                    public Observable<Province> call() {
+                        // provincesList = mWeatherDB.loadProvinces(mDBManager.getDatabase());
+                        db = SQLiteDatabase.openOrCreateDatabase("data/data/com.quintet.littleweather/china_city.db", null);
+                        provincesList = DBUtils.getAllProvince(db);
+                        dataList.clear();
+                        return Observable.from(provincesList);
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(observer);
 
 
     }
@@ -146,7 +149,8 @@ public class SelectCityActivity extends BaseActivity {
         dataList.clear();
         mCollapsingToolbarLayout.setTitle(selectedProvince.ProName);
         Observer<City> observer = new Observer<City>() {
-            @Override public void onCompleted() {
+            @Override
+            public void onCompleted() {
                 currentLevel = LEVEL_CITY;
 
                 //mCityAdapter.notifyDataSetChanged();
@@ -157,19 +161,22 @@ public class SelectCityActivity extends BaseActivity {
             }
 
 
-            @Override public void onError(Throwable e) {
+            @Override
+            public void onError(Throwable e) {
 
             }
 
 
-            @Override public void onNext(City city) {
+            @Override
+            public void onNext(City city) {
                 dataList.add(city.CityName);
             }
         };
 
 
         Observable.defer(new Func0<Observable<City>>() {
-            @Override public Observable<City> call() {
+            @Override
+            public Observable<City> call() {
                 // cityList = mWeatherDB.loadCities(mDBManager.getDatabase(), selectedProvince.ProSort);
 
                 db = SQLiteDatabase.openOrCreateDatabase("data/data/com.quintet.littleweather/china_city.db", null);
@@ -181,12 +188,12 @@ public class SelectCityActivity extends BaseActivity {
                 .subscribe(observer);
     }
 
-    @Override public boolean onKeyDown(int keyCode, KeyEvent event) {
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (currentLevel == LEVEL_PROVINCE) {
                 finish();
-            }
-            else {
+            } else {
                 queryProvinces();
                 // mRecyclerView.smoothScrollToPosition(0);
             }

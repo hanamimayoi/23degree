@@ -3,18 +3,27 @@ package com.quintet.littleweather.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -32,7 +41,7 @@ import com.quintet.littleweather.config.SpacesItemDecoration;
 import com.quintet.littleweather.https.RetrofitSingleton;
 
 import rx.Observable;
-import rx.Subscriber;
+import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -42,6 +51,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private SwipeRefreshLayout mSwipeRefreshWidget;
     private RecyclerView mRecyclerView;
     private RecycleView adapter;
+    private FloatingActionButton fab;
     //判断是否使用过高德定位；
     private boolean isLocation;
     //高德定位客服端；
@@ -50,34 +60,63 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private AMapLocationClientOption mLocationOption = null;
 
     //当前的城市名字
-    private Subscriber<Weather> mSubscriber;
+    private String mCityName;
+
+    private Observer<Weather> mObserver;
+    private SearchView mSearchView;
+
+    private DrawerLayout mDrawer;
+    private Toolbar mToolbar;
+    private NavigationView mNavigationView;
+    private CoordinatorLayout mCoord;
+    private CollapsingToolbarLayout mCollapsingLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //设置沉浸式状态栏：在此选择变透明的方式
-        setContentView(R.layout.mainactivity);
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        setContentView(R.layout.activity_main);
+
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        mCoord = (CoordinatorLayout) findViewById(R.id.coord);
+
+        mCollapsingLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
 
         //设置工具栏
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
         //监听抽屉的打开和关闭
         //ActionBarDrawerToggle实现了DrawerLayout.DrawerListener
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         //setDrawerListener()方法已经过时，改用addDrawerListener()
-        drawer.addDrawerListener(toggle);
+        mDrawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        //初始化fab，并设置监听事件
+        initFab();
+
         //设置NavigationView的监听事件
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        mNavigationView = (NavigationView) findViewById(R.id.nav_view);
+        mNavigationView.setNavigationItemSelectedListener(this);
         //找到swiperefresh控件和recyleview控件
         mSwipeRefreshWidget = (SwipeRefreshLayout) findViewById(R.id.swiprefresh);
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         //加载SwipeRefreshLayout控件
         InitSwipeRefresh();
+        InitRecycleView();
         fetchData();
+    }
+
+    private void initFab() {
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //给我一个String 存入shareprefence
+                Toast.makeText(MainActivity.this, mCityName, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     //设置下拉刷新
@@ -89,24 +128,15 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             @Override
             public void onRefresh() {
                 // TODO Auto-generated method stub
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        adapter.notifyDataSetChanged();
-                        mSwipeRefreshWidget.setRefreshing(false);
-                    }
-                }, 6000);
+                fetchDataByNetwork(mSetting.getString(Setting.CITY_NAME, "上海"));
             }
         });
     }
 
     //设置RecycleView列表,瀑布流!
-    public void InitRecycleView(Weather weather) {
+    public void InitRecycleView() {
         //设置layoutManager
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        //设置adapter
-        adapter = new RecycleView(weather,this);
-        mRecyclerView.setAdapter(adapter);
         //设置item之间的间隔
         SpacesItemDecoration decoration = new SpacesItemDecoration(16);
         mRecyclerView.addItemDecoration(decoration);
@@ -125,6 +155,43 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.weatherapplication, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        mSearchView.setQueryHint("请输入您想查询的城市");
+
+        //刚进去就是SearchView获得焦点的状态（软键盘弹出），关闭SearchView之后又会缩小成放大镜图标
+        //searchView.setIconified(false);
+
+        //Toolbar上不是单个放大镜图标，而是一直是SearchView展开的状态，但是不会抢占焦点，需要手动点击才有焦点，并且不会缩小成放大镜图标
+        //searchView.setIconifiedByDefault(false);
+
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                mSearchView.setIconified(true);//第一次调用清除输入框的文字，失去焦点
+                mSearchView.setIconified(true);//第二次调用搜索框缩小为放大镜
+
+                query = query.replace("市", "")
+                        .replace("县", "")
+                        .replace("省", "")
+                        .replace("自治区", "")
+                        .replace("特别行政区", "")
+                        .replace("地区", "")
+                        .replace("盟", "");
+
+                new RefreshHandler().sendEmptyMessage(1);
+                fetchDataByNetwork(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return true;
+            }
+
+        });
+
         return true;
     }
 
@@ -137,6 +204,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+
             return true;
         }
 
@@ -150,13 +218,15 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         int id = item.getItemId();
         if (id == R.id.nav_city) {
 
-          //进入选择城市activity
-            startActivityForResult(new Intent(MainActivity.this, SelectCityActivity.class),1);
+            //进入选择城市activity
+            startActivityForResult(new Intent(MainActivity.this, SelectCityActivity.class), 1);
 
         } else if (id == R.id.nav_set) {
-
+            Intent intent = new Intent(this, SettingActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_about) {
-
+            Intent intent = new Intent(this, AboutActivity.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -164,28 +234,45 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         return true;
     }
 
-    public void refresh() {
-        fetchDataByNetwork();
-    }
-
-
     public void fetchData() {
 
-        mSubscriber = new Subscriber<Weather>() {
+        mObserver = new Observer<Weather>() {
+
+            /**
+             * onCompleted和onError总有一个会被调用的，即使在一次订阅过程中
+             * 发送的事件序列为空，onCompleted方法也还是会被调用的
+             * onError在发生异常导致事件中断的时候触发
+             */
             @Override
             public void onCompleted() {
-
+                //即使因为城市名错误，事件序列被过滤掉了，onCompleted方法还是会被调用的
+                Log.d("MainActivity", "onCompleted is called");
+                new RefreshHandler().sendEmptyMessage(2);
             }
 
             @Override
             public void onError(Throwable e) {
-
+                Log.d("MainActivity", "onError is called");
+                RetrofitSingleton.disposeFailure(e, MainActivity.this, mCoord);
+                //发生错误的时候也发送2，告诉SwipeRefresh组件停止刷新状态
+                new RefreshHandler().sendEmptyMessage(2);
             }
 
             @Override
             public void onNext(Weather weather) {
-                //加载RecyelerView控件
-                InitRecycleView(weather);
+
+                Log.d("MainActivity", "onNext is called");
+
+                new RefreshHandler().sendEmptyMessage(2);
+
+                //OnNext()被调用就说明确实拿到了符合要求的数据，在这里的城市名是肯定没有错误的，那么可以把城市名保存起来
+                mCollapsingLayout.setTitle(weather.basic.city);
+                mSetting.putString(Setting.CITY_NAME, weather.basic.city);
+
+                //设置adapter
+                adapter = new RecycleView(weather, MainActivity.this);
+                mRecyclerView.setAdapter(adapter);
+
             }
         };
 
@@ -198,31 +285,35 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
         String weatherJson = mACache.getAsString("weather");
 
-        //weatherJson不是null或者空串
+        //weatherJson不是null或者空串，有缓存就从缓存里面读取JSON
         if (!TextUtils.isEmpty(weatherJson)) {
             Gson gson = new GsonBuilder().create();
             Weather weather = gson.fromJson(weatherJson, Weather.class);
-            Observable.just(weather).subscribe(mSubscriber);
+            Observable.just(weather).distinct().subscribe(mObserver);
         } else {
-            fetchDataByNetwork();
+            //没有缓存就根据SharedPreference保存的城市名去请求数据，默认是上海
+            fetchDataByNetwork(mSetting.getString(Setting.CITY_NAME, "上海"));
         }
     }
 
-    public void fetchDataByNetwork() {
-        Log.d("MainActivity", "fetchDataByNetwork is called");
+    public void fetchDataByNetwork(String cityName) {
 
+        //请求数据，发送事件，在订阅的时候触发网络请求，获取数据，然后发送事件，感觉跟defer()操作符类似
         RetrofitSingleton.getApiService()
-                .getWeatherAPI("上海", Setting.KEY)
+                .getWeatherAPI(cityName, Setting.KEY)
                 .subscribeOn(Schedulers.io())
                 .filter(new Func1<WeatherAPI, Boolean>() {
                     @Override
                     public Boolean call(WeatherAPI weatherAPI) {
+                        Log.d("MainActivity", "filter is called");
                         return weatherAPI.heWeatherDataService.get(0).status.equals("ok");
                     }
                 })
                 .map(new Func1<WeatherAPI, Weather>() {
                     @Override
                     public Weather call(WeatherAPI weatherAPI) {
+
+                        Log.d("MainActivity", "map is called");
                         return weatherAPI.heWeatherDataService.get(0);
                     }
                 })
@@ -230,19 +321,42 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     @Override
                     public void call(Weather weather) {
 
+                        Log.d("MainActivity", "doOnNext is called");
                         Gson gson = new GsonBuilder().create();
-
                         String weatherJson = gson.toJson(weather);
-
                         Log.d("MainActivity", "weatherJson------------------" + weatherJson);
+                        //获取设置的缓存时间，默认是不缓存
+                        int time = Integer.parseInt(mSetting.getString("cache_time", "0")) * Setting.ONE_HOUR;
+                        //缓存Json数据
+                        mACache.put("weather", weatherJson, time);
 
-                        //设置Json数据在缓存中的保存时间
-                        mACache.put("weather", weatherJson,
-                                mSetting.getInt(Setting.AUTO_UPDATE, 1) * Setting.ONE_HOUR);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(mSubscriber);
+                .subscribe(mObserver);
+    }
+
+    //更新Refresh组件的更新状态，因为是更新UI，所以需要一个Handler来处理
+    class RefreshHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                //开始刷新
+                case 1:
+                    mSwipeRefreshWidget.setRefreshing(true);
+                    break;
+                //怎么判断我这一次是成功拿到数据，还是出错了呢？
+                case 2:
+                    //如果显示正在刷新，就取消刷新状态
+                    if (mSwipeRefreshWidget.isRefreshing()) {
+                        mSwipeRefreshWidget.setRefreshing(false);
+                        Snackbar.make(mCoord, "加载完毕", Snackbar.LENGTH_SHORT).show();
+                    }
+
+
+                    break;
+            }
+        }
     }
 
     /**
@@ -301,6 +415,22 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             mLocationClient.stopLocation();
             //并销毁高德定位客户端
             mLocationClient.onDestroy();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == 2) {
+            String city = data.getStringExtra(Setting.CITY_NAME)
+                    .replace("市", "")
+                    .replace("县", "")
+                    .replace("省", "")
+                    .replace("自治区", "")
+                    .replace("特别行政区", "")
+                    .replace("地区", "")
+                    .replace("盟", "");
+            new RefreshHandler().sendEmptyMessage(1);
+            fetchDataByNetwork(city);
         }
     }
 }

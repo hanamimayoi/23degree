@@ -54,7 +54,9 @@
         <activity
             android:name=".activity.SelectCityActivity"
             android:label="@string/title_activity_select_city"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+        <activity android:name=".activity.SettingActivity" />
+        <activity android:name=".activity.AboutActivity"></activity>
     </application>
 
 </manifest>

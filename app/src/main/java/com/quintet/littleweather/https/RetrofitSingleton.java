@@ -1,5 +1,11 @@
 package com.quintet.littleweather.https;
 
+import android.content.Context;
+import android.support.design.widget.Snackbar;
+import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
+
 import com.google.gson.Gson;
 
 import java.util.concurrent.Executor;
@@ -46,7 +52,18 @@ public class RetrofitSingleton {
         if (apiService == null) {
             initApiService();
         }
+
+        Log.d("RetrofitSingleton", "getApiService-----------------" + apiService.toString());
         return apiService;
+    }
+
+    public static void disposeFailure(Throwable t, Context context, View v) {
+        if (t.toString().contains("GaiException")
+                || t.toString().contains("SocketTimeoutException")) {
+            Snackbar.make(v, "网络似乎有点儿问题", Snackbar.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "网络异常", Toast.LENGTH_SHORT).show();
+        }
     }
 
 

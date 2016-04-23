@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="界面">
+        <ListPreference
+            android:entries="@array/cache_time"
+            android:entryValues="@array/cache_time_values"
+            android:key="cache_time"
+            android:title="天气数据缓存时长" />
+
+        <ListPreference
+            android:entries="@array/change_icons"
+            android:entryValues="@array/change_icons_value"
+            android:key="change_icons"
+            android:title="选择图标" />
+
+        <SwitchPreference
+            android:key="auto_location"
+            android:summaryOff="定位已关闭"
+            android:summaryOn="定位已开启"
+            android:title="是否开启定位" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="系统">
+        <Preference
+            android:key="clear_cache"
+            android:title="清除缓存" />
+    </PreferenceCategory>
+
+
+</PreferenceScreen>
