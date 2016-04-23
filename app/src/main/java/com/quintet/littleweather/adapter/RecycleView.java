@@ -300,7 +300,6 @@ public class RecycleView extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 //填充item2的时刻表图片
                 (((itemView2) holder).item2_tvtime_image_list).get(i).setImageResource(R.mipmap.icon_clock);
                 //填充item2的时刻字符串
-
                 String[] split = weather.hourlyForecast.get(i).date.split(" ");
                 (((itemView2) holder).item2_tvtime_text_list).get(i).setText(split[1]);
                 //填充item2的温度图片

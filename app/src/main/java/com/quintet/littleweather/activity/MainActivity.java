@@ -289,7 +289,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         if (!TextUtils.isEmpty(weatherJson)) {
             Gson gson = new GsonBuilder().create();
             Weather weather = gson.fromJson(weatherJson, Weather.class);
-            Observable.just(weather).distinct().subscribe(mObserver);
+            Observable.just(weather).subscribe(mSubscriber);
         } else {
             //没有缓存就根据SharedPreference保存的城市名去请求数据，默认是上海
             fetchDataByNetwork(mSetting.getString(Setting.CITY_NAME, "上海"));
@@ -312,8 +312,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 .map(new Func1<WeatherAPI, Weather>() {
                     @Override
                     public Weather call(WeatherAPI weatherAPI) {
-
-                        Log.d("MainActivity", "map is called");
                         return weatherAPI.heWeatherDataService.get(0);
                     }
                 })
@@ -321,7 +319,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     @Override
                     public void call(Weather weather) {
 
-                        Log.d("MainActivity", "doOnNext is called");
                         Gson gson = new GsonBuilder().create();
                         String weatherJson = gson.toJson(weather);
                         Log.d("MainActivity", "weatherJson------------------" + weatherJson);
