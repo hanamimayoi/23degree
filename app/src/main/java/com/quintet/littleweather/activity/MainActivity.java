@@ -59,9 +59,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     //高德定位参数设置
     private AMapLocationClientOption mLocationOption = null;
 
-    //当前的城市名字
-    private String mCityName;
-
     private Observer<Weather> mObserver;
     private SearchView mSearchView;
 
