@@ -56,7 +56,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //设置沉浸式状态栏：在此选择变透明的方式
-        setContentView(R.layout.mainactivity);
+        setContentView(R.layout.activity_main);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         //设置工具栏
