@@ -305,7 +305,7 @@ public class RecycleView extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 //填充item2的温度图片
                 (((itemView2) holder).item2_tvtemp_image_list).get(i).setImageResource(R.mipmap.icon_temp);
                 //填充item2的温度字符串
-                (((itemView2) holder).item2_tvtemp_text_list).get(i).setText(weather.hourlyForecast.get(i).tmp);
+                (((itemView2) holder).item2_tvtemp_text_list).get(i).setText(weather.hourlyForecast.get(i).tmp + "°C");
                 //填充item2的湿度图片
                 (((itemView2) holder).item2_tvhumidity_image_list).get(i).setImageResource(R.mipmap.icon_shidu);
                 //填充item2的湿度字符串
@@ -313,7 +313,7 @@ public class RecycleView extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 //填充item2的风速图片
                 (((itemView2) holder).item2_tvwindspeed_image_list).get(i).setImageResource(R.mipmap.icon_windspeed);
                 //填充item2的风速字符串
-                (((itemView2) holder).item2_tvwindspeed_text_list).get(i).setText(weather.hourlyForecast.get(i).wind.spd);
+                (((itemView2) holder).item2_tvwindspeed_text_list).get(i).setText(weather.hourlyForecast.get(i).wind.spd + "km");
             }
         } else if (holder instanceof itemView3) {
             //填充item3的衣服图片

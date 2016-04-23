@@ -18,8 +18,8 @@
 
         <ImageView
             android:id="@+id/item2_tvtime_image"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
             android:layout_gravity="center_vertical"
             android:layout_marginTop="1dp"
             android:src="@mipmap/icon_clock"
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="1dp"
+            android:layout_marginTop="0dp"
             android:text="16:00"
             android:textColor="#fff" />
 
@@ -44,8 +44,8 @@
 
         <ImageView
             android:id="@+id/item2_tvtemp_image"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="15dp"
             android:src="@mipmap/icon_temp"
@@ -69,11 +69,11 @@
 
         <ImageView
             android:id="@+id/item2_tvhumidity_image"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="18dp"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="1dp"
             android:src="@mipmap/icon_shidu"
             android:tint="@color/cardview_light_background" />
 
@@ -82,8 +82,8 @@
             android:id="@+id/item2_tvhumidity_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="3dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="0dp"
             android:minWidth="24sp"
             android:text="81%"
             android:textColor="#fff" />
@@ -98,8 +98,8 @@
 
         <ImageView
             android:id="@+id/item2_tvwindspeed_image"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="12dp"
