@@ -548,7 +548,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 //获取当前定位结果来源，如网络定位结果，详见定位类型表
                 aMapLocation.getLocationType();
 
-                //将定位的“城市名称”保存到Setting中
                 String s = aMapLocation.getCity()
                         .replace("市", "")
                         .replace("县", "")
@@ -561,8 +560,15 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                         .replace("藏族羌族自治州", "")
                         .replace("彝族自治州", "");
 
-                //Snackbar.make(mCoord, "定位成功", Snackbar.LENGTH_SHORT).show();
-                fetchDataByNetwork(s);
+                if (s.equals(mSetting.getString(Setting.CITY_NAME, "上海"))) {
+                    //Toast.makeText(this, "定位成功，但是与上次保存的城市一样，所以从缓存里拿数据，缓存没有的话会发送网络请求", Toast.LENGTH_SHORT).show();
+                    //如果定位的城市和最近一次SP中保存的城市没变，从缓存拿数据，缓存没有的话会发送网络请求
+                    fetchDataByCache();
+                } else {
+                    //Toast.makeText(this, "定位成功，而且与上次保存的城市不一样，所以直接发送网络请求", Toast.LENGTH_SHORT).show();
+                    fetchDataByNetwork(s);
+                }
+
 
             } else {
 
