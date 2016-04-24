@@ -36,9 +36,13 @@ import com.quintet.littleweather.adapter.RecycleView;
 import com.quintet.littleweather.base.BaseActivity;
 import com.quintet.littleweather.bean.Weather;
 import com.quintet.littleweather.bean.WeatherAPI;
+import com.quintet.littleweather.behavior.ScrollAwareFABBehavior;
 import com.quintet.littleweather.config.Setting;
 import com.quintet.littleweather.config.SpacesItemDecoration;
 import com.quintet.littleweather.https.RetrofitSingleton;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import rx.Observable;
 import rx.Observer;
@@ -109,14 +113,56 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     private void initFab() {
         fab = (FloatingActionButton) findViewById(R.id.fab);
+        CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) fab.getLayoutParams();
+        lp.setBehavior(new ScrollAwareFABBehavior(this, null));
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //给我一个String 存入shareprefence
+
+                String city = mSetting.getString(Setting.CITY_NAME, "上海");
+                saveCollectCity(city);
+
                 Toast.makeText(MainActivity.this, mSetting.getString(Setting.CITY_NAME,"上海")
                         ,Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void saveCollectCity(String city) {
+        int size = mSetting.getInt("size", 0);
+
+        if (size == 0) {
+            mSetting.putString("city" + size, city);
+            mSetting.putInt("size", size + 1);
+        } else {
+
+            if (!isCitySaved(city)) {
+
+                mSetting.putString("city" + size, city);
+                mSetting.putInt("size", size+1);
+            }
+        }
+    }
+
+    private boolean isCitySaved(String city) {
+
+        List<String> getList = new ArrayList<>();
+        int size = mSetting.getInt("size", 0);
+        for (int i = 0; i < size; i++) {
+            getList.add(mSetting.getString("city" + i, "no"));
+        }
+
+        for (int i = 0; i < getList.size(); i++) {
+
+            if (city.equals(getList.get(i))) {
+                return true;
+            }
+        }
+
+        return false;
+
     }
 
     //设置下拉刷新
