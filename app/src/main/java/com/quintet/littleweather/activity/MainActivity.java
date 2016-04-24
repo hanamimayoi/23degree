@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -58,8 +59,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private RecyclerView mRecyclerView;
     private RecycleView adapter;
     private FloatingActionButton fab;
-    //判断是否使用过高德定位；
-    private boolean isLocation;
     //高德定位客服端；
     private AMapLocationClient mLocationClient = null;
     //高德定位参数设置
@@ -79,6 +78,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
      */
     private List<Favorites.City> mCities;
     private Favorites.City mCurrentCity;
+    private ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +109,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mDrawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        mProgressBar = (ProgressBar) findViewById(R.id.progress_bar);
+
         //初始化fab，并设置监听事件
         initFab();
 
@@ -121,8 +123,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         InitRecycleView();
         //加载SwipeRefreshLayout控件
         InitSwipeRefresh();
+
         new RefreshHandler().sendEmptyMessage(1);
 
+        //开始拿数据
         fetchData();
 
         /**
@@ -139,7 +143,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                /**
+                 * 因为当前界面上的城市名字，肯定是在observer的onNext回调方法中保存到SP中了
+                 * 所以在当前界面上点击爱心收藏时，从SP中拿取的城市名字和当前界面上的城市是始终保持一致的，并没有什么问题
+                 */
                 String city = mSetting.getString(Setting.CITY_NAME, "上海");
                 saveCollectCity(city);
             }
@@ -294,9 +301,17 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 int checkedItem = 0;
 
                 final String[] items = new String[mCities.size()];
+                //从SP中取一次就够了，不要在if判断条件中重复取SP，这样会降低效率
+                String cityNameInSP = mSetting.getString(Setting.CITY_NAME, "上海");
                 for (int i = 0; i < mCities.size(); i++) {
                     items[i] = mCities.get(i).name;
-                    if (mCities.get(i).name.equals(mSetting.getString(Setting.CITY_NAME, "上海"))) {
+                    /**
+                     * 还是要重申一下，因为只在observer的onNext回调方法中保存城市名字到SP中
+                     * 因此，SP中的城市名字和当前界面上的城市名字是始终保持一致的
+                     * 所以在这里取出SP中的城市名字进行对比是不会有问题的
+                     *
+                     */
+                    if (mCities.get(i).name.equals(cityNameInSP)) {
                         checkedItem = i;
                     }
                 }
@@ -370,6 +385,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
                 Log.d("MainActivity", "onNext is called");
 
+                mProgressBar.setVisibility(View.GONE);
+
                 new RefreshHandler().sendEmptyMessage(2);
 
                 /**
@@ -386,7 +403,16 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             }
         };
 
-        fetchDataByCache();
+        //因为fetchData()只会在进入APP的时候调用一次，所以取定位也只会调用一次，取缓存也只可能调用一次
+        //如果
+        if (mSetting.getBoolean(Setting.AUTO_LOCATION, false)) {
+            //定位并请求数据，定位之后的请求逻辑在回调方法中
+            location();
+        } else {
+            //如果不允许自动定位，那么就从缓存拿数据，缓存没有的话，会根据SP中保存的城市去发送网络请求
+            fetchDataByCache();
+        }
+
 
     }
 
@@ -504,8 +530,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mLocationOption.setWifiActiveScan(true);
         //设置是否允许模拟位置,默认为false，不允许模拟位置
         mLocationOption.setMockEnable(false);
-        //只在进入程序的时候定位1次
-        mLocationOption.setInterval(-1);
+        //只在进入程序的时候定位1次，所以定位间隔设长一点，5小时好了
+        mLocationOption.setInterval(Setting.ONE_HOUR * 1000 * 5);
         //给定位客户端设置定位参数
         mLocationClient.setLocationOption(mLocationOption);
         //启动高德定位
@@ -521,13 +547,29 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             if (aMapLocation.getErrorCode() == 0) {//定位成功回调信息，设置相关消息
                 //获取当前定位结果来源，如网络定位结果，详见定位类型表
                 aMapLocation.getLocationType();
+
                 //将定位的“城市名称”保存到Setting中
-                mSetting.putString(Setting.CITY_NAME, aMapLocation.getCity());
-                //表明已经启动过定位；
-                isLocation = true;
+                String s = aMapLocation.getCity()
+                        .replace("市", "")
+                        .replace("县", "")
+                        .replace("省", "")
+                        .replace("自治区", "")
+                        .replace("特别行政区", "")
+                        .replace("地区", "")
+                        .replace("盟", "")
+                        .replace("藏族自治州", "")
+                        .replace("藏族羌族自治州", "")
+                        .replace("彝族自治州", "");
+
+                //Snackbar.make(mCoord, "定位成功", Snackbar.LENGTH_SHORT).show();
+                fetchDataByNetwork(s);
+
             } else {
-                //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
-                // 将错误信息写到相应日志文档中
+
+                //Snackbar.make(mCoord, "定位失败", Snackbar.LENGTH_SHORT).show();
+                //定位失败就直接从缓存拿数据，缓存里没有数据会再去发送网络请求
+                fetchDataByCache();
+
             }
         }
     }

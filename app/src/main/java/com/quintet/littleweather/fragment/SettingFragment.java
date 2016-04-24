@@ -62,18 +62,25 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
         mClearCache.setOnPreferenceClickListener(this);
 
         /**
-         * 这里有一个小BUG，刚进入设置界面，点击选项弹出的dialog窗口，没有显示选中我们保存的那个值
+         * 设置刚进设置界面时的设置值，与sharedPreference中保存的值一致
+         * 这里有一个小BUG，刚进入设置界面的时候，点击选项弹出的dialog窗口，没有显示选中我们保存的那个值
          * 而需要在改变一次值之后，再点击选项弹出dialog窗口，就会显示选中改变的那个值，为了更好的体验
-         * 在刚进来的时候也给ListPreference设置一个值，使得第一次弹出的dialog窗口，也能显示选中我们保存的那个值
+         * 在刚进来的时候也给ListPreference设置一个值，使得第一次弹出的dialog窗口就能够显示选中我们保存的那个值
          */
         mCacheTime.setValue(mSetting.getString(Setting.CACHE_TIME, "0"));
         mChangeIcons.setValue(mSetting.getString(Setting.CHANGE_ICONS, "0"));
+
+        /**
+         * 自动定位开关也设置初始值，与sharedPreference中保存的值一致
+         */
+        mAutoLocation.setChecked(mSetting.getBoolean(Setting.AUTO_LOCATION, false));
 
         /**
          * 设置刚进设置界面时的设置详情
          */
         mCacheTime.setSummary(cacheTimeArrays[Integer.parseInt(mSetting.getString(Setting.CACHE_TIME, "0"))]);
         mChangeIcons.setSummary(iconsArrays[Integer.parseInt(mSetting.getString(Setting.CHANGE_ICONS, "0"))]);
+
 
         /**
          * 设置清除缓存的summary

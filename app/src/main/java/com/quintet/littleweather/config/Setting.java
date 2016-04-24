@@ -73,4 +73,12 @@ public class Setting {
         return mPrefs.getInt(key, defaultValue);
     }
 
+    public void putBoolean(String key, boolean defaultValue) {
+        mPrefs.edit().putBoolean(key, defaultValue).commit();
+    }
+
+    public boolean getBoolean(String key, boolean defaultValue) {
+        return mPrefs.getBoolean(key, defaultValue);
+    }
+
 }

@@ -284,14 +284,14 @@ public class RecycleView extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             String tempu = weather.now.tmp + "°C";
             (((itemView1) holder).item1_temp_flu_text).setText(tempu);
             //填充item1最高气温字符串
-            String maxtemp = "↑" + weather.dailyForecast.get(0).tmp.max + "°";
+            String maxtemp = "最高 " + weather.dailyForecast.get(0).tmp.max + "°";
             (((itemView1) holder).item1_temp_max_text).setText(maxtemp);
             //填充item1最低气温字符串
-            String mintemp = "↓" + weather.dailyForecast.get(0).tmp.min + "°";
+            String mintemp = "最低 " + weather.dailyForecast.get(0).tmp.min + "°";
             (((itemView1) holder).item1_temp_min_text).setText(mintemp);
             if (weather.aqi != null) {
                 //填充item1 PM2.5的字符串
-                (((itemView1) holder).item1_temp_pm).setText("PM2.5: " + weather.aqi.city.pm25);
+                (((itemView1) holder).item1_temp_pm).setText("PM 2.5: " + weather.aqi.city.pm25);
                 //填充item1空气质量字符串
                 (((itemView1) holder).item1_temp_quality).setText("空气质量: " + weather.aqi.city.qlty);
             }
