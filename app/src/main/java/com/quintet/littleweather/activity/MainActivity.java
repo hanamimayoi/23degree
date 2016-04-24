@@ -52,7 +52,8 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, AMapLocationListener {
+public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, AMapLocationListener,
+        Thread.UncaughtExceptionHandler {
     private SwipeRefreshLayout mSwipeRefreshWidget;
     private RecyclerView mRecyclerView;
     private RecycleView adapter;
@@ -123,6 +124,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         new RefreshHandler().sendEmptyMessage(1);
 
         fetchData();
+
+        /**
+         * 设置默认的未捕获异常的处理器
+         */
+        Thread.setDefaultUncaughtExceptionHandler(this);
     }
 
     private void initFab() {
@@ -435,6 +441,24 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(mObserver);
+    }
+
+    /**
+     * 这里是有一个BUG，因为外国的城市的数据可能不一样，RecycleView的格式可能不同，导致我搜索“东京“的时候，
+     * APP崩溃了，但是东京的cityName已经在observer的onNext()方法中存到SharedPreference中去了，并且Json也
+     * 已经缓存到cache中了，导致我再进APP的时候，APP依然会崩溃，所以在这里解决一下
+     *
+     * @param thread
+     * @param ex
+     */
+    @Override
+    public void uncaughtException(Thread thread, Throwable ex) {
+        // 单单把SharedPreference中的cityName改成默认的上海还不够，因为有Json数据缓存在cache中，
+        // APP进来的时候会读取cache，这样APP依然会崩溃的
+        mSetting.putString(Setting.CITY_NAME, "上海");
+
+        //因此还要清除缓存的Json数据才行的
+        mACache.clear();
     }
 
     //更新Refresh组件的更新状态，因为是更新UI，所以需要一个Handler来处理
