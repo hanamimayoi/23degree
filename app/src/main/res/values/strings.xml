@@ -2,8 +2,8 @@
     <string name="app_name">23°</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="action_settings">Settings</string>
-    <string name="action_search">请输入你想要查询的城市的天气</string>
+    <string name="action_settings">选择收藏的城市</string>
+    <string name="action_search">搜索</string>
     <string name="title_activity_select_city">SelectCityActivity</string>
 
     <string-array name="cache_time">

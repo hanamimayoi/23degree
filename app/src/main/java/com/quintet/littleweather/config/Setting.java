@@ -30,6 +30,7 @@ public class Setting {
 
     public static final String AUTO_LOCATION = "auto_location";//允许自动定位
 
+    public static final String FAVORITES = "favorites";//收藏的城市
 
     private SharedPreferences mPrefs;
 

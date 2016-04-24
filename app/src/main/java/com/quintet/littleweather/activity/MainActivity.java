@@ -1,5 +1,6 @@
 package com.quintet.littleweather.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,6 +15,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -23,7 +25,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -34,6 +35,7 @@ import com.google.gson.GsonBuilder;
 import com.quintet.littleweather.R;
 import com.quintet.littleweather.adapter.RecycleView;
 import com.quintet.littleweather.base.BaseActivity;
+import com.quintet.littleweather.bean.Favorites;
 import com.quintet.littleweather.bean.Weather;
 import com.quintet.littleweather.bean.WeatherAPI;
 import com.quintet.littleweather.behavior.ScrollAwareFABBehavior;
@@ -41,7 +43,6 @@ import com.quintet.littleweather.config.Setting;
 import com.quintet.littleweather.config.SpacesItemDecoration;
 import com.quintet.littleweather.https.RetrofitSingleton;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -72,11 +73,24 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private CoordinatorLayout mCoord;
     private CollapsingToolbarLayout mCollapsingLayout;
 
+    /**
+     * 都是用来完成收藏城市功能的
+     */
+    private List<Favorites.City> mCities;
+    private Favorites.City mCurrentCity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //设置沉浸式状态栏：在此选择变透明的方式
         setContentView(R.layout.activity_main);
+
+        Gson gson = new GsonBuilder().create();
+        //如果没有收藏城市的话，默认给一个size为0的List，避免 favorites.cities 这个List为空指针
+        String favoJson = mSetting.getString(Setting.FAVORITES, "{\"cities\":[]}");
+        Favorites favorites = gson.fromJson(favoJson, Favorites.class);
+
+        mCities = favorites.cities;
 
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -119,50 +133,58 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //给我一个String 存入shareprefence
 
                 String city = mSetting.getString(Setting.CITY_NAME, "上海");
                 saveCollectCity(city);
-
-                Toast.makeText(MainActivity.this, mSetting.getString(Setting.CITY_NAME,"上海")
-                        ,Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void saveCollectCity(String city) {
-        int size = mSetting.getInt("size", 0);
+        //判断城市是否收藏过
+        if (isCitySaved(city)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("取消收藏")
+                    .setMessage("城市已经收藏过了，要取消收藏吗？")
+                    .setPositiveButton("取消收藏", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            mCities.remove(mCurrentCity);
+                            Snackbar.make(mCoord, "已经取消收藏", Snackbar.LENGTH_SHORT).show();
+                        }
+                    })
+                    .setNegativeButton("放弃", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
 
-        if (size == 0) {
-            mSetting.putString("city" + size, city);
-            mSetting.putInt("size", size + 1);
+                        }
+                    }).show();
         } else {
-
-            if (!isCitySaved(city)) {
-
-                mSetting.putString("city" + size, city);
-                mSetting.putInt("size", size+1);
-            }
+            mCities.add(mCurrentCity);
+            Snackbar.make(mCoord, "收藏成功", Snackbar.LENGTH_SHORT).show();
         }
     }
 
+    /**
+     * 判断城市是否收藏过
+     *
+     * @param city
+     * @return
+     */
     private boolean isCitySaved(String city) {
+        for (Favorites.City c : mCities) {
 
-        List<String> getList = new ArrayList<>();
-        int size = mSetting.getInt("size", 0);
-        for (int i = 0; i < size; i++) {
-            getList.add(mSetting.getString("city" + i, "no"));
-        }
-
-        for (int i = 0; i < getList.size(); i++) {
-
-            if (city.equals(getList.get(i))) {
+            //如果已经收藏过就返回true，并且记录当前城市实例为List中的那个收藏过的城市实例，方便取消收藏的时候直接remove
+            if (city.equals(c.name)) {
+                mCurrentCity = c;
                 return true;
             }
         }
 
-        return false;
+        //如果没收藏过，就返回false，并且记录当前城市实例等于这个将要收藏的城市实例，方便添加实例
+        mCurrentCity = new Favorites().new City(city);
 
+        return false;
     }
 
     //设置下拉刷新
@@ -199,7 +221,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.weatherapplication, menu);
 
@@ -255,6 +276,36 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
 
+            if (mCities == null || mCities.size() == 0) {
+                Snackbar.make(mCoord, "还没有收藏的城市", Snackbar.LENGTH_SHORT).show();
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.ThemeOverlay_Material_Dialog);
+
+                /**
+                 * 设置Dialog进去的时候的默认选项，应该与界面上的城市保持一致
+                 * 如果界面上的城市不在收藏列表中，就默认选中第一个
+                 */
+                int checkedItem = 0;
+
+                final String[] items = new String[mCities.size()];
+                for (int i = 0; i < mCities.size(); i++) {
+                    items[i] = mCities.get(i).name;
+                    if (mCities.get(i).name.equals(mSetting.getString(Setting.CITY_NAME, "上海"))) {
+                        checkedItem = i;
+                    }
+                }
+
+                builder.setTitle("选择收藏的城市")
+                        .setSingleChoiceItems(items, checkedItem,
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        new RefreshHandler().sendEmptyMessage(1);
+                                        fetchDataByNetwork(items[which]);
+                                        dialog.dismiss();
+                                    }
+                                }).show();
+            }
             return true;
         }
 
@@ -315,7 +366,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
                 new RefreshHandler().sendEmptyMessage(2);
 
-                //OnNext()被调用就说明确实拿到了符合要求的数据，在这里的城市名是肯定没有错误的，那么可以把城市名保存起来
+                /**
+                 * OnNext()被调用就说明确实拿到了符合要求的数据
+                 * 在这里的城市名是肯定没有错误的，那么在这里把城市名保存起来是肯定不会有风险的
+                 */
                 mCollapsingLayout.setTitle(weather.basic.city);
                 mSetting.putString(Setting.CITY_NAME, weather.basic.city);
 
@@ -463,6 +517,15 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             //并销毁高德定位客户端
             mLocationClient.onDestroy();
         }
+
+        /**
+         * 将收藏的城市重新保存起来
+         */
+        Favorites favorites = new Favorites();
+        favorites.cities = mCities;
+        Gson gson = new GsonBuilder().create();
+        String favoJson = gson.toJson(favorites);
+        mSetting.putString(Setting.FAVORITES, favoJson);
     }
 
     @Override
@@ -483,4 +546,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             fetchDataByNetwork(city);
         }
     }
+
+
 }
