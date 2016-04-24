@@ -525,13 +525,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         //设置是否返回地址信息（默认返回地址信息）
         mLocationOption.setNeedAddress(true);
         //设置是否只定位一次,默认为false
-        mLocationOption.setOnceLocation(false);
+        mLocationOption.setOnceLocation(true);
         //设置是否强制刷新WIFI，默认为强制刷新
         mLocationOption.setWifiActiveScan(true);
         //设置是否允许模拟位置,默认为false，不允许模拟位置
         mLocationOption.setMockEnable(false);
-        //只在进入程序的时候定位1次，所以定位间隔设长一点，5小时好了
-        mLocationOption.setInterval(Setting.ONE_HOUR * 1000 * 5);
+        //因为在上面设置了只定位一次为true，所以定位间隔就用不到了，注释掉先
+        //mLocationOption.setInterval(Setting.ONE_HOUR * 1000 * 5);
         //给定位客户端设置定位参数
         mLocationClient.setLocationOption(mLocationOption);
         //启动高德定位
@@ -561,11 +561,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                         .replace("彝族自治州", "");
 
                 if (s.equals(mSetting.getString(Setting.CITY_NAME, "上海"))) {
-                    //Toast.makeText(this, "定位成功，但是与上次保存的城市一样，所以从缓存里拿数据，缓存没有的话会发送网络请求", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "定位成功，但是与上次保存的城市一样，所以从缓存里拿数据，缓存没有的话会发送网络请求", Toast.LENGTH_LONG).show();
                     //如果定位的城市和最近一次SP中保存的城市没变，从缓存拿数据，缓存没有的话会发送网络请求
                     fetchDataByCache();
                 } else {
-                    //Toast.makeText(this, "定位成功，而且与上次保存的城市不一样，所以直接发送网络请求", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "定位成功，而且与上次保存的城市不一样，所以直接发送网络请求", Toast.LENGTH_LONG).show();
                     fetchDataByNetwork(s);
                 }
 
